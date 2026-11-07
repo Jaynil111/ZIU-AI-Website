@@ -34,18 +34,44 @@ export const esc = (s) => String(s).replace(/&(?![a-z#0-9]+;)/gi, '&amp;');
 export const placeholders = (html) =>
   html.replace(/\[([^\]<>"=]{1,160})\]/g, '<span class="ph" title="Placeholder: replace before launch">[$1]</span>');
 
-export const logoMark = (cls = '') => `<svg class="mark ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-  <rect x="2.5" y="5" width="4.5" height="15" rx="0.4" class="mark__a"/>
-  <rect x="9.75" y="2" width="4.5" height="20" rx="0.4" class="mark__b"/>
-  <rect x="17" y="6.5" width="4.5" height="12" rx="0.4" class="mark__c"/>
+// ZIU AI mark: a Z whose diagonal is cut into four vertical glass panes,
+// the same vertical glass wall the site is built around. 48-unit grid; the
+// bars and the diagonal share one stroke weight. Each instance gets its own
+// gradient/clip ids so several marks can sit on one page.
+const MARK_PANES = [
+  '6,34 14,27.85 14,34',
+  '15.33,26.82 23.33,20.67 23.33,28.36 16,34 15.33,34',
+  '24.67,19.64 32,14 32.67,14 32.67,21.18 24.67,27.33',
+  '34,14 42,14 34,20.15',
+];
+const MARK_EDGES = [[15.33, 26.82, 34], [24.67, 19.64, 27.33], [34, 14, 20.15]];
+let markId = 0;
+export const logoMark = (cls = '') => {
+  const id = `zm${++markId}`;
+  return `<svg class="mark ${cls}" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="0" y1="14" x2="0" y2="34"><stop offset="0" stop-color="#EE6B7D"/><stop offset=".5" stop-color="#D23A4C"/><stop offset="1" stop-color="#A9233A"/></linearGradient>
+    <linearGradient id="${id}s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <clipPath id="${id}c">${MARK_PANES.map((pt) => `<polygon points="${pt}"/>`).join('')}</clipPath>
+  </defs>
+  <rect class="mark__bar mark__bar--t" x="6" y="8" width="36" height="6" rx="0.5"/>
+  <rect class="mark__bar mark__bar--b" x="6" y="34" width="36" height="6" rx="0.5"/>
+  <g class="mark__panes" fill="url(#${id}g)">${MARK_PANES.map((pt, i) => `<polygon class="mark__pane" style="--i:${i}" points="${pt}"/>`).join('')}</g>
+  <g class="mark__edges">${MARK_EDGES.map(([x, a, b]) => `<line x1="${x}" y1="${a}" x2="${x}" y2="${b}"/>`).join('')}</g>
+  <g clip-path="url(#${id}c)"><rect class="mark__sheen" x="-14" y="10" width="9" height="28" fill="url(#${id}s)"/></g>
 </svg>`;
+};
 
-export const logo = () => `<a class="logo" href="/" data-logo aria-label="ZIU AI, home (replays the intro)">${logoMark()}<span class="logo__word">ZIU<span> AI</span></span></a>`;
+// Wordmark: ZIU AI with red glass in the lower half of Z, U and the last I:
+// where the panes of the Z mark land in the logo animation.
+export const wordmark = (cls = '') => `<span class="wm ${cls}"><span class="wm__a"><span class="wm__r">Z</span>I<span class="wm__r">U</span></span><span class="wm__b">A<span class="wm__r">I</span></span></span>`;
+
+export const logo = () => `<a class="logo" href="/" data-logo aria-label="ZIU AI, home (replays the intro)">${wordmark()}</a>`;
 
 export const btn = ({ label, href }, variant = 'primary', extra = '') =>
   `<a class="btn btn--${variant}" href="${href}" ${extra}><span>${label}</span><svg class="btn__arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg></a>`;
 
-export const link = (label, href) => `<a class="tlink" href="${href}">${label}<span aria-hidden="true"> →</span></a>`;
+export const link = (label, href) => `<a class="tlink tlink--go" href="${href}">${label}<span aria-hidden="true"> →</span></a>`;
 
 export const kicker = (num, text, tone = '') => `<p class="kicker ${tone}"><span class="kicker__n">${num}</span><span class="kicker__t">${text}</span></p>`;
 
@@ -100,11 +126,12 @@ const footer = () => `
   </div>
   <section class="signature" aria-label="ZIU AI">
     <div class="signature__aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-    <p class="signature__word" aria-hidden="true"><span class="sig__a">ZIU</span><span class="sig__b">AI</span><span class="signature__shadow"><span class="sig__a">ZIU</span><span class="sig__b">AI</span></span></p>
+    <p class="signature__word" aria-hidden="true"><span class="sig__a"><span class="sig__g sig__r">Z</span><span class="sig__g">I</span><span class="sig__g sig__r">U</span></span><span class="sig__b"><span class="sig__g">A</span><span class="sig__g sig__r">I</span></span><span class="signature__shadow"><span class="sig__a">ZIU</span><span class="sig__b">AI</span></span></p>
   </section>
   <div class="wrap">
     <div class="footer__legal">
       <p>© 2026 [Registered company name]. All rights reserved.</p>
+      <p class="footer__credit">Glass piano sound: <a href="https://github.com/sfzinstruments/SalamanderGrandPiano" rel="noopener">Salamander Grand Piano</a> by Alexander Holm, <a href="https://creativecommons.org/licenses/by/3.0/" rel="noopener license">CC BY 3.0</a>.</p>
       <ul><li><a href="/privacy/">Privacy policy</a></li><li><a href="/terms/">Terms</a></li><li><button type="button" class="linklike" data-cookie-settings>Cookie settings</button></li></ul>
     </div>
   </div>

@@ -16,7 +16,6 @@ addEventListener('resize', queueFrame);
 /* Header: transparent over cinematic tops, solid once scrolled. */
 const header = document.querySelector('.site-header');
 onFrame(() => header && header.classList.toggle('is-solid', scrollY > 24));
-
 /* Mobile menu. */
 const toggle = document.querySelector('.menu-toggle');
 const menu = document.getElementById('mobile-menu');
@@ -414,7 +413,7 @@ if (smoothWheel) {
 const sig = document.querySelector('.signature');
 if (sig) {
   const word = sig.querySelector('.signature__word');
-  const parts = [...word.querySelectorAll(':scope > .sig__a, :scope > .sig__b')];
+  const parts = [...word.querySelectorAll(':scope > .sig__a .sig__g, :scope > .sig__b .sig__g')]; // each letter paints itself
   // Measure on an invisible copy outside the page flow. Never resize the real
   // word to measure it: shrinking it, even for a moment, makes the page shorter
   // and pulls the scroll position up when you are at the bottom.
@@ -424,6 +423,7 @@ if (sig) {
   document.body.appendChild(meas);
   let fitW = 0;
   const fit = (force) => {
+    word.querySelectorAll('.sig__r').forEach((el) => { el._w = null; });
     const cs = getComputedStyle(sig);
     const cw = sig.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
     if (!force && cw === fitW) return; // height-only resizes (phone toolbars) change nothing
@@ -433,9 +433,15 @@ if (sig) {
     const scale = Math.min((cw * 0.98) / w, (vh * 0.68) / h);
     word.style.fontSize = `${(100 * scale).toFixed(1)}px`;
   };
+  // The light sheen crosses the word letter by letter, left to right.
+  const stagger = () => {
+    const w = word.getBoundingClientRect();
+    parts.forEach((p) => { const b = p.getBoundingClientRect(); p.style.setProperty('--sd', `${(((b.left + b.width / 2 - w.left) / Math.max(1, w.width)) * 1.1).toFixed(2)}s`); });
+  };
   fit(true);
-  addEventListener('resize', () => fit(false));
-  document.fonts?.ready.then(() => fit(true));
+  stagger();
+  addEventListener('resize', () => { fit(false); stagger(); });
+  document.fonts?.ready.then(() => { fit(true); stagger(); });
 
 
   if (!reduced) {
@@ -476,6 +482,66 @@ if (sig) {
     // Keep the light anchored while the page scrolls under a still cursor.
     addEventListener('scroll', () => { if (sig.classList.contains('is-lit')) kick(); }, { passive: true });
     apply();
+
+    /* Red water in Z, U and I. It pours in to half height when the wordmark first
+       comes into view, then the surface keeps moving gently. Moving the cursor
+       stirs it: the waves grow and quicken under the cursor and the level swells
+       a little there, then settles. Only runs while the wordmark is on screen. */
+    const reds = [...word.querySelectorAll('.sig__r')];
+    const DELAY = [0, 160, 320];
+    let mergedAt = 0, wraf = 0, onScreen = false, energy = 0, phase = 0, lastT = 0, lastSc = 0, px0 = null, pt0 = 0;
+    const measureW = () => {
+      const r = sig.getBoundingClientRect();
+      reds.forEach((el) => {
+        const b = el.getBoundingClientRect();
+        el._w = { cx: b.left + b.width / 2 - r.left, w: b.width, H: b.height, fs: parseFloat(getComputedStyle(el).fontSize) };
+      });
+    };
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    const wave = (now) => {
+      wraf = 0;
+      if (!onScreen || !mergedAt) return;
+      wraf = requestAnimationFrame(wave);
+      const dt = Math.min(0.05, (now - (lastT || now)) / 1000); lastT = now;
+      if (now - lastSc < 120) return; // hold still while the page scrolls
+      if (!reds[0]._w) measureW();
+      phase += dt * (0.32 + energy * 1.5);
+      energy *= Math.exp(-dt * 1.6);
+      const lit = sig.classList.contains('is-lit');
+      const cx = x * sig.clientWidth; // the smoothed light position from above
+      reds.forEach((el, i) => {
+        const m = el._w;
+        const pour = ease(Math.min(1, Math.max(0, (now - mergedAt - DELAY[i]) / 900)));
+        if (pour <= 0) return;
+        const k = lit ? Math.exp(-Math.pow((cx - m.cx) / (0.75 * m.w), 2)) : 0;
+        const level = 50 * pour + k * (1.5 + 3 * energy); // % of the letter height
+        const A = m.H * (0.011 + 0.022 * k * Math.min(1, 0.3 + energy)) * (0.35 + 0.65 * pour); // wave height (px)
+        const wa = (A * 40) / 11; // the crest drawing spans 22 of its 40 units
+        const wy = m.H * (1 - level / 100) - wa / 2;
+        const fb = ((m.H - (wy + wa) + 0.6) / m.H) * 100;
+        const tw = 0.62 * m.fs, tw2 = 0.86 * m.fs;
+        const ph = phase + i * 0.37;
+        el.style.setProperty('--wa', `${wa.toFixed(2)}px`);
+        el.style.setProperty('--wy', `${wy.toFixed(2)}px`);
+        el.style.setProperty('--wy2', `${(wy - wa * 0.12).toFixed(2)}px`);
+        el.style.setProperty('--wx', `${(-(ph * tw) % tw).toFixed(2)}px`);
+        el.style.setProperty('--wx2', `${((ph * 0.62 * tw2) % tw2).toFixed(2)}px`);
+        el.style.setProperty('--fb', `${Math.max(0, fb).toFixed(2)}%`);
+      });
+    };
+    const kickW = () => { if (!wraf && onScreen && mergedAt) { lastT = 0; wraf = requestAnimationFrame(wave); } };
+    new MutationObserver(() => { if (!mergedAt && sig.classList.contains('is-merged')) { mergedAt = performance.now(); kickW(); } })
+      .observe(sig, { attributes: true, attributeFilter: ['class'] });
+    new IntersectionObserver(([e]) => { onScreen = e.isIntersecting; kickW(); }, { rootMargin: '120px 0px' }).observe(sig);
+    addEventListener('scroll', () => { lastSc = performance.now(); }, { passive: true });
+    addEventListener('resize', () => { reds.forEach((el) => { el._w = null; }); });
+    document.fonts?.ready.then(() => reds.forEach((el) => { el._w = null; }));
+    // cursor speed stirs the water
+    sig.addEventListener('pointermove', (e) => {
+      const t = performance.now();
+      if (px0 != null && t > pt0) energy = Math.min(1.4, energy + Math.min(0.5, (Math.abs(e.clientX - px0) / Math.max(1, sig.clientWidth)) * 7));
+      px0 = e.clientX; pt0 = t;
+    }, { passive: true });
   }
 }
 
@@ -546,5 +612,18 @@ document.querySelectorAll('[data-calc]').forEach((calc) => {
     try { cost = new Intl.NumberFormat(c === 'INR' ? 'en-IN' : 'en', { style: 'currency', currency: c, maximumFractionDigits: 0 }).format(yearly * r); } catch (e) { cost = `${Math.round(yearly * r)} ${c}`; }
     const task = (q.get('t') || '').slice(0, 80);
     msg.value = `${task ? `Task: ${task}\n` : ''}My estimate from the savings calculator: ${h} hours a week × ${p} ${p === 1 ? 'person' : 'people'}, about ${s}% automatable, ${w} working weeks → around ${Math.round(yearly)} hours a year (${cost} at ${r} ${c}/hour). I'd like to check whether this is worth automating.`;
+  }
+}
+
+/* Finale: the red glass pours into Z, U and I the first time the closing
+   wordmark is well in view (CSS: .signature.is-merged). */
+const sigMerge = document.querySelector('.signature');
+if (sigMerge) {
+  if (reduced || !('IntersectionObserver' in window)) sigMerge.classList.add('is-merged');
+  else {
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { sigMerge.classList.add('is-merged'); io.disconnect(); }
+    }, { threshold: 0.45 });
+    io.observe(sigMerge);
   }
 }

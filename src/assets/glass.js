@@ -45,6 +45,8 @@ uniform vec4 uP[${MAXP}];
 uniform vec4 uS[${MAXP}];
 uniform float uA[${MAXP}];
 uniform float uSamples;
+// Struck pane (hero piano): x = pane index, y = strength 0..1, z = height of the light ring
+uniform vec3 uKey;
 
 const float WALLZ = 4.6;
 const vec3 RUBY = vec3(0.773, 0.176, 0.243);
@@ -155,11 +157,12 @@ vec3 render(vec3 ro, vec3 rd){
     vec4 bs = vec4(0.0);
     float ba = 0.0;
     bool hit = false;
+    float bi = -1.0;
     for (int i = 0; i < ${MAXP}; i++){
       if (i >= uCount) break;
       vec3 nn, nf;
       vec2 t = boxHit(ro, rd, uP[i].xyz, uS[i].xyz, uA[i], nn, nf);
-      if (t.x > 0.0005 && t.x < best){ best = t.x; bn = nn; bp = uP[i]; bs = uS[i]; ba = uA[i]; hit = true; }
+      if (t.x > 0.0005 && t.x < best){ best = t.x; bn = nn; bp = uP[i]; bs = uS[i]; ba = uA[i]; hit = true; bi = float(i); }
     }
     if (!hit){ escaped = true; break; }
 
@@ -191,6 +194,12 @@ vec3 render(vec3 ro, vec3 rd){
     col += thr * edge * (SILVER * 0.09 * uSoft + RUBY * 0.05 * uRed) * (0.3 + band(p.y));
 
     if (b == 0){ cP = p; cThr = thr * face; cOff = vec2(c.x * 3.0, c.z); cMix = bs.w; }
+    // A struck pane rings with light: a soft inner glow and a bright band that
+    // travels up the glass, both fading with the note.
+    if (uKey.y > 0.001 && abs(bi - uKey.x) < 0.5){
+      float ringL = exp(-pow((p.y - uKey.z) * 5.0, 2.0));
+      col += thr * uKey.y * (RUBY * 0.11 + SILVER * 0.04 + vec3(1.0, 0.93, 0.94) * 0.46 * ringL) * (0.55 + 0.45 * face);
+    }
 
     thr *= (1.0 - F) * (1.0 - edge * 0.28);
 
@@ -305,7 +314,7 @@ export class GlassWall {
     gl.enableVertexAttribArray(loc);
     gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     this.u = {};
-    ['uRes', 'uTime', 'uRo', 'uTa', 'uFocal', 'uDoor', 'uSoft', 'uRed', 'uCaus', 'uExpo', 'uHaze', 'uLightY', 'uCount', 'uP', 'uS', 'uA', 'uSamples']
+    ['uRes', 'uTime', 'uRo', 'uTa', 'uFocal', 'uDoor', 'uSoft', 'uRed', 'uCaus', 'uExpo', 'uHaze', 'uLightY', 'uCount', 'uP', 'uS', 'uA', 'uSamples', 'uKey']
       .forEach((n) => { this.u[n] = gl.getUniformLocation(prog, n); });
   }
 
@@ -377,6 +386,7 @@ export class GlassWall {
     gl.uniform1f(u.uHaze, s.haze);
     gl.uniform1f(u.uLightY, s.lightY);
     gl.uniform1f(u.uSamples, s.samples || 1);
+    if (u.uKey) { const k = s.key || [-1, 0, 0]; gl.uniform3f(u.uKey, k[0], k[1], k[2]); }
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   }
 }

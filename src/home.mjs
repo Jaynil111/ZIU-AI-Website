@@ -1,4 +1,4 @@
-import { btn, link, kicker, cglass, logoMark, sectionIndex, icon, founderFeature, CTA } from './components.mjs';
+import { btn, link, kicker, cglass, logoMark, wordmark, sectionIndex, icon, founderFeature, CTA } from './components.mjs';
 import { USE_CASES } from './data.mjs';
 import { FAQS, OWNER, phoneLink } from './data.mjs';
 
@@ -34,7 +34,7 @@ export const home = () => `
 </section>
 
 <div class="intro" aria-label="Intro">
-  <div class="intro__brand">${logoMark('mark--intro')}<span>ZIU AI</span></div>
+  <div class="intro__brand">${logoMark('mark--intro')}${wordmark('wm--intro')}</div>
   <div class="intro__load">
     <ol class="intro__steps" aria-hidden="true">
       <li data-load-step>Typefaces</li><li data-load-step>Glass</li><li data-load-step>Light</li>
@@ -214,7 +214,7 @@ export const home = () => `
         <p class="demo__n">${n}</p>
         <p class="demo__d">${d}</p>
         <p class="demo__v">${v}</p>
-        <a class="tlink tlink--light" href="#demo-modal" data-demo="${n}: ${d.replace(/"/g, '')}">Watch the demo<span aria-hidden="true"> →</span></a>
+        <a class="tlink tlink--light tlink--go" href="#demo-modal" data-demo="${n}: ${d.replace(/"/g, '')}">Watch the demo<span aria-hidden="true"> →</span></a>
       </li>`).join('')}
     </ul>
     <div class="actions" data-reveal><a class="btn btn--ghost-light" href="#demo-modal" data-demo="Demo 1: An enquiry email becomes a CRM record and a drafted reply waiting for approval."><span>Watch the demos</span></a></div>
