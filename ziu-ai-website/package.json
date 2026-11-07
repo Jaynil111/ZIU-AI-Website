@@ -1,0 +1,23 @@
+{
+  "name": "ziu-ai-website",
+  "version": "1.0.0",
+  "description": "ZIU AI website: static site generator with a WebGL glass wall",
+  "scripts": {
+    "build": "node src/build.mjs",
+    "serve": "python3 -m http.server 4173 --directory dist",
+    "check": "node src/build.mjs && node tools/reconcile.mjs && node tools/check.mjs",
+    "dev": "node tools/serve.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "type": "module",
+  "devDependencies": {
+    "@fontsource-variable/inter-tight": "^5.3.0",
+    "@fontsource/instrument-serif": "^5.3.0"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  }
+}
