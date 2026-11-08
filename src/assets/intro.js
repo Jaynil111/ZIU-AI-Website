@@ -156,8 +156,9 @@ function drawHero(time, fit) {
   c.ta[0] += pointer.sx * 0.05;
   const ht = clamp((performance.now() - state.hazeStart) / 1100, 0, 1);
   const haze = state.hazeFrom * (1 - sstep(0, 1, ht));
+  state.cam = { ro: c.ro.slice(), ta: c.ta.slice(), focal: focal(fit) };
   wall.draw({
-    time, ro: c.ro, ta: c.ta, focal: focal(fit),
+    time, ro: c.ro, ta: c.ta, focal: focal(fit), key: keyLight(),
     door: 0.8, soft: 1, red: 0.42, caus: 1, expo: 0.95, haze, samples: isNarrow() ? 1 : 2,
     lightY: Math.sin(time * 0.35) * 2.8,
   });
@@ -304,7 +305,8 @@ async function boot() {
     performance.mark('ziu:compile-start');
     await wall.init();
     performance.measure('ziu:compile', 'ziu:compile-start');
-    wall.setPanels(isNarrow() ? PANELS_MOBILE : PANELS);
+    state.panels = isNarrow() ? PANELS_MOBILE : PANELS;
+    wall.setPanels(state.panels);
     wall.onLost = () => useFallback(new Error('WebGL context lost'));
   } catch (err) {
     useFallback(err);
@@ -334,6 +336,84 @@ async function boot() {
   else startIntro();
   raf = requestAnimationFrame(frame);
 }
+
+/* ---------- Glass piano (homepage hero only) ----------
+   Each glass pane of the hero wall is a piano key: click (or tap) one and it
+   plays a note and rings with light. Panes are tuned left to right to a
+   pentatonic scale, so any run of clicks sounds musical. The pane under the
+   pointer is found by casting the same camera ray the shader uses. */
+const SCALE = [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84]; // C major pentatonic, C4 up
+const key = { idx: -1, t0: 0 };
+const v3 = {
+  sub: (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]],
+  cross: (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]],
+  norm: (a) => { const l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; },
+};
+function paneAt(x, y) {
+  const P = state.panels, cam = state.cam;
+  if (!P || !cam) return -1;
+  const r = canvas.getBoundingClientRect();
+  if (x < r.left || x > r.right || y < r.top || y > r.bottom) return -1;
+  const fw = v3.norm(v3.sub(cam.ta, cam.ro)), rt = v3.norm(v3.cross([0, 1, 0], fw)), up = v3.cross(fw, rt);
+  const ux = (x - r.left - r.width / 2) / r.height, uy = (r.height / 2 - (y - r.top)) / r.height;
+  const rd = v3.norm([0, 1, 2].map((k) => fw[k] * cam.focal + ux * rt[k] + uy * up[k]));
+  let best = Infinity, hit = -1;
+  P.forEach((p, i) => {
+    const c = [p.x, p.y, p.z], h = [p.w, p.h, p.t];
+    let t0 = -Infinity, t1 = Infinity;
+    for (let k = 0; k < 3; k++) {
+      const d = Math.abs(rd[k]) < 1e-6 ? 1e-6 : rd[k];
+      let a = (c[k] - h[k] - cam.ro[k]) / d, b = (c[k] + h[k] - cam.ro[k]) / d;
+      if (a > b) [a, b] = [b, a];
+      t0 = Math.max(t0, a); t1 = Math.min(t1, b);
+    }
+    if (t0 <= t1 && t0 > 0 && t0 < best) { best = t0; hit = i; }
+  });
+  return hit;
+}
+// light on the struck pane: [index, strength, height of the travelling ring]
+function keyLight() {
+  if (params.has('key')) return [+params.get('key'), 0.9, 0.25]; // debug: ?key=3 lights pane 3
+  if (key.idx < 0 || reduced) return [-1, 0, 0];
+  const age = (performance.now() - key.t0) / 1000;
+  if (age > 2.6) { key.idx = -1; return [-1, 0, 0]; }
+  const p = state.panels[key.idx];
+  const strength = Math.min(1, age / 0.03) * Math.exp(-age / 0.75);
+  return [key.idx, strength, p.y - p.h + (age / 1.15) * p.h * 2.4];
+}
+const noteFor = (i) => {
+  const order = state.panels.map((p, k) => [p.x, k]).sort((a, b) => a[0] - b[0]).map((q) => q[1]);
+  return SCALE[Math.min(SCALE.length - 1, order.indexOf(i))];
+};
+const notKey = (el) => el.closest('a, button, input, textarea, select, label, summary, h1, h2, h3, p, li, .btn, .hero__scroll');
+let piano = null;
+function strike(i) {
+  key.idx = i; key.t0 = performance.now();
+  const p = state.panels[i];
+  const play = (m) => m.playNote(noteFor(i), 0.66 + Math.random() * 0.12, Math.max(-1, Math.min(1, p.x / 2.6)));
+  if (piano) play(piano);
+  else import('./piano.js').then((m) => { piano = m; play(m); }).catch(() => {});
+  if (state.mode === 'hero') state.lastDraw = 0; // draw the light at once
+}
+hero && hero.addEventListener('click', (e) => {
+  if (state.mode !== 'hero' && state.mode !== 'static') return;
+  if (notKey(e.target)) return;
+  const i = paneAt(e.clientX, e.clientY);
+  if (i >= 0) strike(i);
+});
+let hoverRaf = 0, hoverEv = null;
+hero && hero.addEventListener('pointermove', (e) => {
+  hoverEv = e;
+  if (hoverRaf) return;
+  hoverRaf = requestAnimationFrame(() => {
+    hoverRaf = 0;
+    const ev = hoverEv;
+    const on = (state.mode === 'hero' || state.mode === 'static') && !notKey(ev.target) && paneAt(ev.clientX, ev.clientY) >= 0;
+    hero.classList.toggle('is-key-hover', on);
+    if (on && !piano) import('./piano.js').then((m) => { piano = m; m.preload(); }).catch(() => {});
+  });
+}, { passive: true });
+hero && hero.addEventListener('pointerleave', () => hero.classList.remove('is-key-hover'));
 
 // Logo returns to the start and replays the intro (no reload; assets stay cached).
 document.querySelectorAll('[data-logo]').forEach((a) => a.addEventListener('click', (e) => {

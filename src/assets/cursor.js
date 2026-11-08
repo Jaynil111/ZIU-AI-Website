@@ -34,7 +34,7 @@ if (fine && !reduced && params.get('cursor') !== '0') {
     const el = target instanceof Element ? target : null;
     const text = el && el.closest('input:not([type=checkbox]):not([type=radio]):not([type=submit]), textarea, select, [contenteditable="true"]');
     const cta = el && el.closest('.btn--primary');
-    const link = el && el.closest('a, button, summary, label.check, [role="button"], .stage__canvas');
+    const link = el && el.closest('a, button, summary, label.check, [role="button"], .stage__canvas, .hero.is-key-hover');
     const dark = el && el.closest('[data-theme="dark"], .site-footer, .mobile-menu, .founder .portrait, .walk, .dialog--video');
     root.classList.toggle('cursor-text', !!text);
     root.classList.toggle('cursor-cta', !!cta);

@@ -16,7 +16,6 @@ addEventListener('resize', queueFrame);
 /* Header: transparent over cinematic tops, solid once scrolled. */
 const header = document.querySelector('.site-header');
 onFrame(() => header && header.classList.toggle('is-solid', scrollY > 24));
-
 /* Mobile menu. */
 const toggle = document.querySelector('.menu-toggle');
 const menu = document.getElementById('mobile-menu');
@@ -498,3 +497,4 @@ document.querySelectorAll('[data-calc]').forEach((calc) => {
     msg.value = `${task ? `Task: ${task}\n` : ''}My estimate from the savings calculator: ${h} hours a week × ${p} ${p === 1 ? 'person' : 'people'}, about ${s}% automatable, ${w} working weeks → around ${Math.round(yearly)} hours a year (${cost} at ${r} ${c}/hour). I'd like to check whether this is worth automating.`;
   }
 }
+

@@ -128,16 +128,26 @@ Run `npm run build` again afterwards to go back to Web3Forms.
 - Homepage intro and hero: a live ray-traced glass wall (`glass.js`) with refraction, polished bevels and caustics, adaptive resolution and 2x anti-aliasing.
 - Page headers, call-to-action bands and the founder portrait: sharp stills of the same glass (`glass-still.js`), drawn once each in small pieces so scrolling never stutters. CSS glass is the fallback.
 
+**Logo**
+- Wordmark "ZIU AI" with red glass in the lower half of Z, U and the last I (`wordmark()` in `components.mjs`), used in the header and footer; on hover the red rises a little.
+- The Z mark (`logoMark()`), whose diagonal is four vertical glass panes, sits in the loader and is the favicon.
+- Intro: at the end of the glass flight the supplied logo video (`src/media/ziu-logo.mp4`) plays, enlarged and unchanged, then gives way to the hero.
+- Closing section: the same logo video plays each time it scrolls into view and rests on its last frame.
+
 **Intro**
-- Branded loader, then a short fly-through the glass wall (about 2.5 seconds).
+- Branded loader, then a short fly-through the glass wall (about 2.5 seconds), then the logo video.
 - **Skip** at any time; clicking the logo replays it. Going back to the homepage skips it and restores your scroll position.
 
 **Motion**
 - Fade transitions between pages (View Transitions API, where supported).
 - Reading-progress line, word-by-word headings, line icons that draw on, timelines that fill as you scroll, glass panes moving at different depths.
 - Smooth wheel scrolling on desktop; touch, keyboard and scrollbar stay native.
-- Finale: a full-screen "ZIU AI" wordmark lit by the cursor or a finger.
 - Glass cursor on desktop.
+
+**Glass piano (homepage hero)**
+- Each glass pane of the hero wall is a piano key: click or tap one to play a note (tuned left to right to C major pentatonic). The pane rings with light: a ruby glow and a band of light traveling up the glass.
+- The sound is a real recorded grand piano: nine notes (C4–C6) of the [Salamander Grand Piano](https://github.com/sfzinstruments/SalamanderGrandPiano) by Alexander Holm, CC BY 3.0, in `src/assets/piano/` (about 530 KB, fetched when the pointer first rests on a pane). Notes in between replay the nearest recording at the right pitch. The credit is in the footer and must stay while the samples are used.
+- If the recordings cannot load, `piano.js` falls back to a synthesized piano. Nowhere else on the site makes sound.
 
 **Tools**
 - Savings calculator on Resources (`/resources/#savings`); uses only the visitor's own figures, shows the formula, and can prefill the contact form.
@@ -156,6 +166,7 @@ Add these to the URL:
 | Switch | Effect |
 | --- | --- |
 | `?p=0.5` | Freeze the intro at a point (0–1); `?p=1` goes straight to the hero |
+| `?key=3` | Hold the piano light on hero pane 3 (to check the glow) |
 | `?gl=0` | Force the no-WebGL fallback |
 | `?motion=reduce` | Simulate the reduced-motion setting |
 | `?smooth=0` | Turn off smooth wheel scrolling |
