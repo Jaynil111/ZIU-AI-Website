@@ -1,6 +1,6 @@
-import { btn, link, kicker, cglass, logoMark, wordmark, sectionIndex, icon, founderFeature, CTA } from './components.mjs';
+import { btn, link, productPortfolio, kicker, cglass, logoMark, logo3d, wordmark, sectionIndex, icon, founderFeature, CTA } from './components.mjs';
 import { USE_CASES, PILLARS, SERVICE_DETAILS, ENGAGEMENTS, FIT } from './data.mjs';
-import { FAQS, OWNER, phoneLink } from './data.mjs';
+import { FAQS, OWNER } from './data.mjs';
 
 const faq = (items) => `<div class="faq">${items.map((f) => `
   <details class="faq__item">
@@ -11,7 +11,7 @@ export { faq };
 
 export const homeIndex = sectionIndex([
   ['top', 'Top'], ['what', 'What we do'], ['fit', 'Who it is for'], ['problem', 'The problem'], ['solutions', 'Solutions'],
-  ['how', 'How it works'], ['results', 'Results'], ['pricing', 'Pricing'], ['demos', 'See it working'],
+  ['how', 'How it works'], ['portfolio', 'Portfolio'], ['pricing', 'Pricing'], ['demos', 'See it working'],
   ['safety', 'Safety and control'], ['team', 'Team'], ['faq', 'FAQs'], ['start', 'Get started'],
 ]);
 
@@ -25,12 +25,11 @@ export const home = () => `
   <div class="wrap hero__inner">
     <p class="kicker kicker--light hero__kick"><span class="kicker__t">AI consulting, custom automation and software</span></p>
     <h1 id="hero-title" class="display hero__title">We find where AI pays off, then build&nbsp;it.</h1>
-    <p class="hero__sub">ZIU AI works out where AI will save your business the most, builds the automation or tool, and keeps it running. First process live in about 30 days.</p>
+    <p class="hero__sub">ZIU AI works out where AI will save your business the most, builds the automation or application, and keeps it running. First process live in about 30 days.</p>
     <div class="actions hero__actions">
       ${btn(CTA.book)}
       ${btn(CTA.check, 'ghost-light')}
     </div>
-    <p class="hero__proof"><span class="pulse" aria-hidden="true"></span><span>Built and tested in our own operations first. [Insert one measured result from your own business, e.g. “New inquiries answered in under 5 minutes, down from 6 hours, measured over 8 weeks”.]</span></p>
   </div>
   <a class="hero__scroll" href="#what"><span>Scroll</span><i aria-hidden="true"></i></a>
 </section>
@@ -44,7 +43,7 @@ export const home = () => `
     <p class="intro__status" role="status" aria-live="polite">Loading</p>
   </div>
   <div class="intro__sting" aria-hidden="true">
-    <video class="logo-video sting__video" src="/assets/media/ziu-logo.mp4" muted playsinline preload="auto" disablepictureinpicture></video>
+    ${logo3d('logo3d--sting')}
   </div>
   <p class="intro__hint" aria-hidden="true">Scroll to move through the glass</p>
   <button class="intro__skip" type="button">Skip intro <span aria-hidden="true">→</span></button>
@@ -72,7 +71,7 @@ export const home = () => `
   <div class="wrap">
     <div class="split split--head" data-reveal>
       <div>${kicker('02', 'Who it is for')}<h2 id="fit-title" class="h1">Built for companies that run on people and spreadsheets.</h2></div>
-      <p class="lede">Owner-led and mid-size businesses, 10 to 500 people, in any sector where work still moves by hand.</p>
+      <p class="lede">Owner-led and mid-size businesses.</p>
     </div>
     <div class="two-lists">
       <div data-reveal>${kicker('A', 'A good fit if')}<ul class="ticks ticks--lg">${FIT.yes.map((t) => `<li>${t}</li>`).join('')}</ul></div>
@@ -90,8 +89,8 @@ export const home = () => `
         <p class="lede">Usually because no one owned the process, the data or the follow-through. We do.</p>
       </div>
       <ul class="problem__list" data-reveal>
-        <li><span class="problem__n">i</span>Your team copies the same information between tools every day.</li>
-        <li><span class="problem__n">ii</span>You bought AI tools, but few people use them for real work.</li>
+        <li><span class="problem__n">i</span>Your team copies the same information between applications every day.</li>
+        <li><span class="problem__n">ii</span>You bought AI applications, but few people use them for real work.</li>
         <li><span class="problem__n">iii</span>A pilot looked promising and never became part of the routine.</li>
       </ul>
     </div>
@@ -141,7 +140,7 @@ export const home = () => `
       <ol class="steps__list">
         ${[
           ['Map', 'We interview the people who do the work and map how it runs today. You keep the map and a ranked list of what to fix first.', '2–4 hours'],
-          ['Build', 'We build the automation or tool in your accounts and test it on real examples. You see progress every week.', '1–2 hours a week'],
+          ['Build', 'We build the automation or application in your accounts and test it on real examples. You see progress every week.', '1–2 hours a week'],
           ['Launch', 'We switch it on with your team, train them and watch it closely for two weeks.', '1–2 hours'],
           ['Run', 'We monitor, fix and improve it, and report results every month.', '30 minutes a month'],
         ].map(([t, d, time], i) => `<li class="step" data-step>
@@ -156,59 +155,32 @@ export const home = () => `
   </div>
 </section>
 
-<section class="section proof" id="results" aria-labelledby="results-title">
+<section class="section portfolio" id="portfolio" aria-labelledby="portfolio-title">
   <div class="wrap">
     <div class="split split--head" data-reveal>
-      <div>${kicker('06', 'Results')}<h2 id="results-title" class="h1">Measured results, starting with our own business.</h2></div>
-      <p class="lede">Automations in daily use at ZIU AI, measured every month. Every result shows the starting point, the change and the period.</p>
+      <div>${kicker('06', 'Product portfolio')}<h2 id="portfolio-title" class="h1">Software we have created.</h2></div>
+      <p class="lede">Explore our products and applications.</p>
     </div>
-    <div class="table-wrap" data-reveal>
-      <table class="proof-table">
-        <caption class="sr-only">Automations in daily use at ZIU AI, with before and after measurements</caption>
-        <thead><tr><th scope="col">Automation</th><th scope="col">Before</th><th scope="col">After</th><th scope="col">Measured over</th></tr></thead>
-        <tbody>
-          <tr data-reveal><th scope="row">Lead intake and first reply</th><td data-label="Before">[baseline]</td><td data-label="After">[result]</td><td data-label="Measured over">[period]</td></tr>
-          <tr data-reveal><th scope="row">Proposal and quote drafting</th><td data-label="Before">[baseline]</td><td data-label="After">[result]</td><td data-label="Measured over">[period]</td></tr>
-          <tr data-reveal><th scope="row">Invoicing and payment follow-up</th><td data-label="Before">[baseline]</td><td data-label="After">[result]</td><td data-label="Measured over">[period]</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="cases__grid">
-      <article class="case-card" data-reveal>
-        <p class="case-card__label">Every case study we publish shows the starting point, what we built, the result and the period measured. No result is published before it has been measured for at least four weeks.</p>
-        <h3 class="h3">[Case study title]</h3>
-        <dl class="case-card__metrics">
-          <div><dt>Before</dt><dd>[Before]</dd></div>
-          <div><dt>After</dt><dd>[After]</dd></div>
-          <div><dt>Measured over</dt><dd>[period]</dd></div>
-        </dl>
-      </article>
-      <aside class="founding" data-reveal>
-        <p class="kicker"><span class="kicker__t">Founding clients</span></p>
-        <p class="founding__text">A reduced price for the first clients who let us publish a measured result.</p>
-        <div class="actions">${btn({ label: 'Ask about a founding-client place', href: '/contact/?topic=founding' })}${btn({ label: 'See our results', href: '/case-studies/' }, 'ghost')}</div>
-      </aside>
-    </div>
-    <p class="tools-line" data-reveal><span class="tools-line__label">We build with the tools you already use, including</span> Microsoft 365 · Google Workspace · HubSpot · Salesforce · Zapier · Make · n8n · <span class="nowrap">leading AI models</span></p>
+    ${productPortfolio()}
+    <div class="actions">${btn({ label: 'View product portfolio', href: '/portfolio/' }, 'ghost')}</div>
   </div>
 </section>
 
 <section class="section starter" id="pricing" aria-labelledby="pricing-title">
   <div class="wrap">
     <div class="split split--head" data-reveal>
-      <div>${kicker('07', 'Pricing')}<h2 id="pricing-title" class="h1">Start small. Fixed price. No hourly billing.</h2></div>
-      <p class="lede">A short discovery you keep, then one working automation in about 30 days. Every price is agreed in writing before work starts.</p>
+      <div>${kicker('07', 'Pricing')}<h2 id="pricing-title" class="h1">Pricing shaped around your requirements.</h2></div>
+      <p class="lede">The cost depends on what you need to build, connect and maintain. Share your requirements and we will prepare a tailored proposal.</p>
     </div>
     <ol class="track" data-progress>
       ${ENGAGEMENTS.map((e, i) => `<li class="track__step" data-reveal data-progress-item>
-        <p class="track__dur"><span class="track__lbl">Typical duration</span>${e.duration}${e.id === 'run' ? ', cancel with [30] days’ notice' : ''}</p>
-        <p class="track__price"><span class="track__lbl">Starting price</span>${e.price}</p>
+        <p class="track__dur"><span class="track__lbl">Typical duration</span>${e.duration}</p>
         <h3 class="h3"><span>${i + 1}.</span> ${e.name}</h3>
-        <p>${e.body.replace(' Cancel with [30] days’ notice.', '')}</p>
+        <p>${e.body}</p>
       </li>`).join('')}
     </ol>
     <div class="starter__foot" data-reveal>
-      <div><p class="note">You receive a fixed written quote before any work starts. If discovery shows automation is not worth it for you, we say so, and you can stop there.</p>
+      <div><p class="note">We review your requirements before recommending a scope and price. Any changes to the scope or cost are discussed with you before additional work begins.</p>
       <p class="note">${link('Estimate what a task costs you', '/resources/#savings')}</p></div>
       <div class="actions">${btn(CTA.book)}${btn(CTA.pricing, 'ghost')}</div>
     </div>
@@ -222,24 +194,7 @@ export const home = () => `
       <p class="lede lede--light">Real workflows. A person still approves each step that matters.</p>
     </div>
     ${walkthrough()}
-    <ul class="demo-list">
-      ${[
-        ['Demo 1', 'An inquiry email becomes a CRM record and a drafted reply waiting for approval.', '[60–90 second video]'],
-        ['Demo 2', 'A supplier invoice is read, checked against the order and queued for payment.', '[video]'],
-        ['Demo 3', 'A weekly report is assembled from three tools and sent to the team.', '[video]'],
-      ].map(([n, d, v]) => `<li class="demo" data-reveal>
-        <p class="demo__n">${n}</p>
-        <p class="demo__d">${d}</p>
-        <p class="demo__v">${v}</p>
-        <a class="tlink tlink--light tlink--go" href="#demo-modal" data-demo="${n}: ${d.replace(/"/g, '')}">Watch the demo<span aria-hidden="true"> →</span></a>
-      </li>`).join('')}
-    </ul>
-    <div class="actions" data-reveal><a class="btn btn--ghost-light" href="#demo-modal" data-demo="Demo 1: An inquiry email becomes a CRM record and a drafted reply waiting for approval."><span>Watch the demos</span></a></div>
   </div>
-  <dialog id="demo-modal" class="dialog dialog--video" aria-labelledby="demo-modal-title">
-    <div class="dialog__head"><h2 id="demo-modal-title" class="h3" data-modal-title>Demo</h2><button type="button" class="dialog__close" data-close aria-label="Close video">×</button></div>
-    <div class="video-slot"><p>[Demo video to be supplied: 60–90 seconds, showing the human approval step]</p></div>
-  </dialog>
 </section>
 
 <section class="section safety" id="safety" aria-labelledby="safety-title">
@@ -288,7 +243,7 @@ export const home = () => `
     ${kicker('12', 'Get started', 'kicker--light')}
     <h2 id="start-title" class="h1">Find out where AI pays off for you.</h2>
     <p class="lede lede--light">A 30-minute call. You leave with three processes worth automating, whether or not we work together.</p>
-    <div class="actions">${btn(CTA.book)}<a class="tlink tlink--light" href="/contact/">Or message us on [WhatsApp / email]</a></div>
+    <div class="actions">${btn(CTA.book)}<a class="tlink tlink--light" href="mailto:${OWNER.email}">Email us at ${OWNER.email}</a></div>
   </div>
 </section>`;
 

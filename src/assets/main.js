@@ -152,48 +152,14 @@ document.querySelectorAll('[data-walkthrough]').forEach((w) => {
   show(-1);
 });
 
-/* Demo video modal (videos to be supplied). */
-const modal = document.getElementById('demo-modal');
-if (modal && typeof modal.showModal === 'function') {
-  const title = modal.querySelector('[data-modal-title]');
-  document.querySelectorAll('[data-demo]').forEach((b) => b.addEventListener('click', (e) => {
-    e.preventDefault();
-    title.textContent = b.dataset.demo;
-    modal.showModal();
-  }));
-  modal.addEventListener('click', (e) => { if (e.target === modal || e.target.closest('[data-close]')) modal.close(); });
-}
-
-/* Forms: validation, step-by-step flow and delivery to the provider set in
+/* Forms: single-step validation and delivery to the provider set in
    src/site.config.mjs (Formspree, Web3Forms, Netlify Forms or a custom endpoint). */
 document.querySelectorAll('form[data-form]').forEach((form) => {
-  const steps = [...form.querySelectorAll('[data-form-step]')];
-  const counter = form.querySelector('[data-step-count]');
-  const bar = form.querySelector('[data-step-bar]');
-  let cur = 0;
-  const showStep = (n) => {
-    cur = n;
-    steps.forEach((s, k) => { s.hidden = k !== n; });
-    if (counter) counter.textContent = `Step ${n + 1} of ${steps.length}`;
-    if (bar) bar.style.setProperty('--p', String((n + 1) / steps.length));
-    form.querySelector('[data-prev]')?.toggleAttribute('hidden', n === 0);
-    form.querySelector('[data-next]')?.toggleAttribute('hidden', n === steps.length - 1);
-    form.querySelector('[type="submit"]')?.toggleAttribute('hidden', steps.length > 0 && n !== steps.length - 1);
-  };
   const valid = (scope) => {
     const fields = [...scope.querySelectorAll('input, select, textarea')];
     for (const f of fields) { if (!f.checkValidity()) { f.reportValidity(); return false; } }
     return true;
   };
-  if (steps.length) {
-    showStep(0);
-    form.querySelector('[data-next]')?.addEventListener('click', () => {
-      if (!valid(steps[cur])) return;
-      showStep(cur + 1);
-      steps[cur].querySelector('input, select, textarea')?.focus();
-    });
-    form.querySelector('[data-prev]')?.addEventListener('click', () => showStep(cur - 1));
-  }
   const done = form.parentElement.querySelector('[data-form-done]');
   const errorBox = form.querySelector('[data-form-error]');
   const submitBtn = form.querySelector('[type="submit"]');
@@ -225,7 +191,11 @@ document.querySelectorAll('form[data-form]').forEach((form) => {
     // Spam trap: real people never fill the hidden field. Pretend it worked.
     const trap = form.querySelector('.hp input');
     if (trap && trap.value) { finish(); return; }
-    if (!provider) { finish(); return; } // not connected yet: see src/site.config.mjs
+    if (!provider) {
+      const email = document.querySelector('.footer__cols a[href^="mailto:"]');
+      showError(`This form is temporarily unavailable. Please ${email ? `<a href="${email.getAttribute('href')}">email ${email.textContent}</a>` : 'contact us by email'}. Your answers have not been sent.`);
+      return;
+    }
 
     let req;
     if (provider === 'netlify') {
@@ -245,8 +215,8 @@ document.querySelectorAll('form[data-form]').forEach((form) => {
       if (!ok) throw new Error(`HTTP ${res.status}`);
       finish();
     } catch (err) {
-      const phone = document.querySelector('.footer__cols a[href^="tel:"]');
-      showError(`We couldn't send this just now. Your answers are still here, so please try again${phone ? `, or call us on <a href="${phone.getAttribute('href')}">${phone.textContent}</a>` : ''}.`);
+      const email = document.querySelector('.footer__cols a[href^="mailto:"]');
+      showError(`We couldn't send this just now. Your answers are still here, so please try again${email ? `, or email us at <a href="${email.getAttribute('href')}">${email.textContent}</a>` : ''}.`);
     } finally {
       clearTimeout(timer);
       setSending(false);
@@ -408,24 +378,18 @@ if (smoothWheel) {
   document.addEventListener('click', (e) => { if (e.target.closest('a[href*="#"]')) release(); }, true);
 }
 
-/* Closing logo: the ZIU AI logo video plays each time the section comes into view and
-   rests on its last frame (the finished logo). Until then, and under reduced motion,
-   the poster shows that finished logo. */
-const sig = document.querySelector('.signature');
-const sigVideo = sig && sig.querySelector('.signature__video');
-if (sigVideo && !reduced && 'IntersectionObserver' in window) {
-  let played = false;
-  new IntersectionObserver(([e]) => {
-    if (e.isIntersecting && e.intersectionRatio >= 0.55) {
-      if (played) return;
-      played = true;
-      try { sigVideo.currentTime = 0; } catch (err) {}
-      const p = sigVideo.play();
-      if (p && p.catch) p.catch(() => {});
-    } else if (!e.isIntersecting) {
-      played = false; // replay next time it comes into view
+/* Only animate glass logos while visible. Static SVG is the no-JS and
+   reduced-motion fallback; small wordmarks and the large scenes share it. */
+if (!reduced && 'IntersectionObserver' in window) {
+  const logoObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      entry.target.classList.toggle('is-active', entry.isIntersecting);
+      if (entry.target.classList.contains('logo3d--signature')) {
+        entry.target.closest('.signature')?.classList.toggle('is-logo-visible', entry.isIntersecting);
+      }
     }
-  }, { threshold: [0, 0.55] }).observe(sigVideo);
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.logo3d').forEach(logo => logoObserver.observe(logo));
 }
 
 /* Savings calculator: uses only the visitor's own figures. */

@@ -1,12 +1,11 @@
-// Site copy, v2.0 (8 November 2026). American English. Text in [brackets] is a
-// placeholder that renders yellow until the founder supplies the fact.
+// Site copy, v2.0 (8 November 2026). American English.
 
 export const POSITIONING = 'AI consulting, custom automation and software for growing businesses.';
 
 // What we do: three pillars, used on the homepage, the Services page and the footer.
 export const PILLARS = [
   { id: 'advise', name: 'Advise', title: 'Decide where AI pays off', body: 'A clear view of where AI will save your business the most, what it will cost, and what to do first.', services: ['strategy', 'discovery'] },
-  { id: 'build', name: 'Build', title: 'Build the automation or tool', body: 'Automations, AI assistants and custom software, built in your own accounts and tested on your real work.', services: ['workflow', 'assistants', 'software', 'integration'] },
+  { id: 'build', name: 'Build', title: 'Build the automation or application', body: 'Automations, AI assistants and custom software, built in your own accounts and tested on your real work.', services: ['workflow', 'assistants', 'software', 'integration'] },
   { id: 'run', name: 'Run', title: 'Keep it running', body: 'Monitoring, fixes, monthly improvements and training, so what we build stays in daily use.', services: ['run', 'training'] },
 ];
 
@@ -43,53 +42,53 @@ export const USE_CASES = [
   },
   {
     slug: 'reporting', icon: 'reporting', name: 'Reporting',
-    example: 'Figures from all your tools in one weekly summary, in your inbox before Monday’s meeting.',
-    items: ['Figures pulled from several tools into one report', 'Weekly summaries delivered by email or chat', 'Alerts when a number moves outside its usual range'],
-    build: ['Connections to the tools that hold your numbers', 'One report layout, agreed with you, delivered on a schedule', 'Alert thresholds for the figures that matter most'],
+    example: 'Figures from all your applications in one weekly summary, in your inbox before Monday’s meeting.',
+    items: ['Figures pulled from several applications into one report', 'Weekly summaries delivered by email or chat', 'Alerts when a number moves outside its usual range'],
+    build: ['Connections to the applications that hold your numbers', 'One report layout, agreed with you, delivered on a schedule', 'Alert thresholds for the figures that matter most'],
   },
 ];
 
 export const SERVICE_DETAILS = [
   { id: 'strategy', pillar: 'advise', name: 'AI strategy and roadmap', body: 'We assess where AI pays off in your business and give you a ranked, costed roadmap you can act on with or without us.',
-    items: ['Review of your processes, tools and data', 'Ranked opportunities by value, cost and risk', 'A written roadmap with first, second and third steps', 'Clear advice on what not to automate'] },
+    items: ['Review of your processes, applications and data', 'Ranked opportunities by value, cost and risk', 'A written roadmap with first, second and third steps', 'Clear advice on what not to automate'] },
   { id: 'discovery', pillar: 'advise', name: 'Discovery and automation audit', body: 'We map how work moves through your business, find where time is lost, and rank the opportunities by value and effort.',
-    items: ['Process interviews and mapping', 'Ranked list of processes worth automating', 'Time-saved estimate for each, with the assumptions shown', 'A fixed quote for the first build'] },
-  { id: 'workflow', pillar: 'build', name: 'Workflow automation', body: 'We connect the tools you already use so information moves without copy and paste.',
+    items: ['Process interviews and mapping', 'Ranked list of processes worth automating', 'Time-saved estimate for each, with the assumptions shown', 'A tailored proposal for the first build'] },
+  { id: 'workflow', pillar: 'build', name: 'Workflow automation', body: 'We connect the applications you already use so information moves without copy and paste.',
     items: ['CRM, email, calendar, accounting and form integrations', 'Built on Zapier, Make, n8n or custom code, chosen for your case', 'Error alerts and a written handover'] },
   { id: 'assistants', pillar: 'build', name: 'AI assistants and agents', body: 'Assistants that read, draft, sort and answer using your own documents and rules, with a person approving what matters.',
     items: ['Email and inquiry triage', 'Document reading (invoices, forms, contracts)', 'Internal knowledge assistants', 'Customer support assistants with hand-off to staff'] },
-  { id: 'software', pillar: 'build', name: 'Custom tools and software', body: 'When no off-the-shelf tool fits, we design and build the internal tool, portal or application your team needs. You own the code.',
-    items: ['Internal tools, dashboards and client portals', 'Small applications built around one process', 'AI features added to software you already run', 'Source code, documentation and hosting set up in your name'] },
+  { id: 'software', pillar: 'build', name: 'Software/Applications', body: 'When no off-the-shelf application fits, we design and build the internal application, portal or application your team needs. You own the code.',
+    items: ['Internal applications, dashboards and client portals', 'Small applications built around one process', 'AI features added to software you already run', 'Source code, documentation and hosting set up in your name'] },
   { id: 'integration', pillar: 'build', name: 'Systems integration', body: 'We connect systems that do not talk to each other, including older software, through their APIs or files.',
-    items: ['API integrations', 'Data sync between tools', 'Clean-up of duplicate and missing records'] },
+    items: ['API integrations', 'Data sync between applications', 'Clean-up of duplicate and missing records'] },
   { id: 'run', pillar: 'run', name: 'Run and improve', body: 'We monitor every automation we build, fix issues and improve it each month.',
-    items: ['Monitoring and alerts', 'Fixes when a connected tool changes', 'Monthly results report', 'Small changes each month at no extra cost'] },
+    items: ['Monitoring and alerts', 'Fixes when a connected application changes', 'Monthly results report', 'Improvements included in your agreed support scope'] },
   { id: 'training', pillar: 'run', name: 'Training and adoption', body: 'We train your team on each automation and check usage after launch, so it gets used.',
     items: ['Hands-on workshops by team', 'Written guides for each automation', 'Usage review after launch'] },
 ];
 
-// Engagements: three ways to start. Prices are set by the founder.
+// Engagements: all pricing is individually scoped from customer requirements.
 export const ENGAGEMENTS = [
-  { id: 'discovery', name: 'Discovery', duration: '1–2 weeks', price: 'From [price]', suits: 'You know work is being lost but not where to start.',
+  { id: 'discovery', name: 'Discovery', duration: '1–2 weeks', price: 'Custom quote', suits: 'You know work is being lost but not where to start.',
     body: 'We map your key processes, rank the processes worth automating and estimate the time each could save. You keep the full report, whether or not you continue.',
-    includes: ['Interviews with the people who do the work', 'A process map and a ranked list of opportunities', 'A time-saved estimate for each, with the assumptions shown', 'A fixed quote for the first build'] },
-  { id: 'first', name: 'First automation', duration: 'About 30 days', price: 'From [price]', suits: 'You have one process that clearly needs fixing.',
+    includes: ['Interviews with the people who do the work', 'A process map and a ranked list of opportunities', 'A time-saved estimate for each, with the assumptions shown', 'A tailored proposal for the first build'] },
+  { id: 'first', name: 'First automation', duration: 'About 30 days', price: 'Custom quote', suits: 'You have one process that clearly needs fixing.',
     body: 'One process automated end to end, tested with your team, launched and watched closely for two weeks.',
-    includes: ['One automation or tool, built in your accounts', 'Testing on your real examples', 'Training for the people who use it', 'Two weeks of close monitoring after launch'] },
-  { id: 'run', name: 'Run and improve', duration: 'Monthly plan', price: 'From [price] a month', suits: 'You want what we built to keep working and get better.',
-    body: 'Monitoring, fixes, a monthly results report and small improvements. Cancel with [30] days’ notice.',
-    includes: ['Monitoring and alerts', 'Fixes when a connected tool changes', 'A results report every month', 'Small changes each month at no extra cost'] },
+    includes: ['One automation or application, built in your accounts', 'Testing on your real examples', 'Training for the people who use it', 'Two weeks of close monitoring after launch'] },
+  { id: 'run', name: 'Run and improve', duration: 'Monthly plan', price: 'Custom quote', suits: 'You want what we built to keep working and get better.',
+    body: 'Monitoring, fixes, a monthly results report and improvements based on your support requirements.',
+    includes: ['Monitoring and alerts', 'Fixes when a connected application changes', 'A results report every month', 'Improvements included in your agreed support scope'] },
 ];
 
 export const FAQS = [
-  { q: 'How much does it cost?', a: 'Every project is quoted at a fixed price after a 30-minute call, based on the processes involved. Starting prices are on the pricing page. There is no hourly billing, and you see the full quote before any work starts.' },
+  { q: 'How much does it cost?', a: 'Pricing depends on your requirements, project scope, complexity, integrations and support needs. We review these with you and prepare a tailored proposal before work begins. Any changes to scope or cost are discussed with you first.' },
   { q: 'How long does it take?', a: 'Discovery takes 1–2 weeks. A first automation is usually live in about 30 days. Custom software and larger systems take longer, and we tell you how long before you commit.' },
   { q: 'Do you only do automation, or also consulting?', a: 'Both. We advise on where AI pays off and in what order, then build and run what you decide to go ahead with. You can take the advice alone.' },
-  { q: 'Can you build custom software for us?', a: 'Yes. When no off-the-shelf tool fits, we design and build internal tools, portals and small applications around your process. You own the code and the documentation.' },
+  { q: 'Can you build custom software for us?', a: 'Yes. When no off-the-shelf application fits, we design and build internal applications, portals and small applications around your process. You own the code and the documentation.' },
   { q: 'Who owns what you build?', a: 'You do. Automations run in your accounts, code lives in your repositories, and every project ends with documentation and a handover. Nothing is locked to us.' },
-  { q: 'Which tools do you use?', a: 'We build on the tools you already have where possible, and add Zapier, Make, n8n or custom code depending on volume, cost and data needs. We explain the choice in writing.' },
+  { q: 'Which applications do you use?', a: 'We build on the applications you already have where possible, and add Zapier, Make, n8n or custom code depending on volume, cost and data needs. We explain the choice in writing.' },
   { q: 'What happens after launch?', a: 'We watch every automation closely for two weeks after launch. After that, a Run and improve plan covers monitoring, fixes and monthly improvements. Without a plan, you still have full documentation and can run it yourself.' },
-  { q: 'What happens if an automation breaks?', a: 'You are alerted and the task is paused for review. On a Run and improve plan, we fix it within [agreed response time].' },
+  { q: 'What happens if an automation breaks?', a: 'You are alerted and the task is paused for review. On a Run and improve plan, we investigate and resolve issues according to the response times agreed in your support plan.' },
   { q: 'Is our data safe?', a: 'Automations run in your accounts with only the access they need. We tell you where data is processed and which AI services are used, follow the data protection rules in your region, and remove our access when you ask.' },
   { q: 'Will AI replace my staff?', a: 'Our work removes repetitive tasks so people can spend time on customers and decisions. A person stays in charge of anything sensitive.' },
   { q: 'Can we stop after discovery?', a: 'Yes. You keep the discovery report and are under no obligation to continue.' },
@@ -105,35 +104,34 @@ export const INDUSTRIES = [
 
 export const REGIONS = [
   { slug: 'usa-canada', name: 'USA & Canada', long: 'the USA and Canada', title: 'Working with businesses in the USA and Canada.',
-    rows: [['Invoicing currency', 'USD / CAD'], ['Working hours', '[Time zones covered]'], ['Data protection', 'We follow applicable US state privacy laws, such as the CCPA in California, and Canada’s PIPEDA.'], ['How to reach us', 'Email, phone, booking calendar'], ['Local presence', '[Office or representative, only if real]']] },
+    rows: [['Invoicing currency', 'USD / CAD'], ['Data protection', 'Data handling, access and hosting requirements are agreed for each project before work begins.'], ['How to reach us', 'Email: krunal@ziuai.ai']] },
   { slug: 'uk-europe', name: 'UK & Europe', long: 'the UK and Europe', title: 'Working with businesses in the UK and Europe.',
-    rows: [['Invoicing currency', 'GBP / EUR'], ['Working hours', '[Time zones covered]'], ['Data protection', 'We follow UK GDPR and EU GDPR, sign a data processing agreement on request, and can keep processing in the EU or UK where required.'], ['How to reach us', 'Email, phone, booking calendar'], ['Local presence', '[Office or representative, only if real]']] },
+    rows: [['Invoicing currency', 'GBP / EUR'], ['Data protection', 'Data handling, access and hosting requirements are agreed for each project before work begins.'], ['How to reach us', 'Email: krunal@ziuai.ai']] },
   { slug: 'uae-gulf', name: 'UAE & Gulf', long: 'the UAE and the Gulf', title: 'Working with businesses in the UAE and the Gulf.',
-    rows: [['Invoicing currency', 'AED'], ['Working hours', 'Gulf Standard Time [confirm coverage]'], ['Data protection', 'We follow the UAE Personal Data Protection Law (Federal Decree-Law No. 45 of 2021) and state where data is processed.'], ['How to reach us', 'WhatsApp, email, booking calendar. Arabic version planned.'], ['Local presence', '[Office or representative, only if real]']] },
+    rows: [['Invoicing currency', 'AED'], ['Data protection', 'Data handling, access and hosting requirements are agreed for each project before work begins.'], ['How to reach us', 'Email: krunal@ziuai.ai']] },
   { slug: 'india', name: 'India', long: 'India', title: 'Working with businesses in India.',
-    rows: [['Invoicing currency', 'INR'], ['Working hours', 'IST [confirm coverage]'], ['Data protection', 'We follow the Digital Personal Data Protection Act, 2023.'], ['How to reach us', 'WhatsApp, email, booking calendar'], ['Local presence', '[Office or representative, only if real]']] },
+    rows: [['Invoicing currency', 'INR'], ['Data protection', 'Data handling, access and hosting requirements are agreed for each project before work begins.'], ['How to reach us', 'Email: krunal@ziuai.ai']] },
 ];
 
-export const TOOLS = [
+export const APPLICATIONS = [
   ['Zapier', 'Simple, low-volume workflows between popular apps; fastest to set up', 'Cost can rise with task volume'],
   ['Make', 'Workflows with several steps and if/then rules', 'Complex scenarios need careful documentation'],
-  ['n8n (an automation tool that can run on your own servers)', 'Higher volumes, custom logic, or a need to keep data on your own servers', 'Self-hosting needs maintenance'],
+  ['n8n (an automation application that can run on your own servers)', 'Higher volumes, custom logic, or a need to keep data on your own servers', 'Self-hosting needs maintenance'],
   ['Custom code', 'Unusual systems, strict performance or security needs', 'Higher build cost; needs a maintainer'],
 ];
 
 // Who we work best with (homepage "Who it is for").
 export const FIT = {
-  yes: ['You have 10 to 500 people and work still moves by email, spreadsheets and copy and paste', 'You own the decision and want a fixed price, not an hourly bill', 'You want one process fixed properly before you commit to more', 'You want to own what gets built and understand how it works'],
+  yes: ['Your work still moves by email, spreadsheets and copy and paste', 'You own the decision and want a proposal tailored to your requirements', 'You want one process fixed properly before you commit to more', 'You want to own what gets built and understand how it works'],
   no: ['You want a chatbot on the website and nothing behind it', 'You need a large system rebuilt in a quarter', 'You want AI to make decisions no one checks', 'You are looking for the cheapest hourly rate'],
 };
 
 // Why ZIU AI rather than the alternatives (pricing page).
 export const COMPARE = [
-  ['Hire in-house', 'A salary before the first result, and one person who has to know strategy, automation tools and software.', 'You get a team that does this every week, at a fixed price per project, and a handover you can take in-house later.'],
-  ['Do it yourself with no-code tools', 'Fast to start, slow to finish. Automations break quietly when a tool changes, and no one is watching.', 'We build on the same tools where they fit, add monitoring and alerts, and fix things when they break.'],
-  ['A large consultancy', 'Long discovery, large teams, and a bill that grows with the hours.', 'A named person, a fixed written quote, and a first result in about 30 days.'],
+  ['Hire in-house', 'A salary before the first result, and one person who has to know strategy, automation applications and software.', 'You get a team that does this every week, with scope and pricing tailored to your project, and a handover you can take in-house later.'],
+  ['Do it yourself with no-code applications', 'Fast to start, slow to finish. Automations break quietly when an application changes, and no one is watching.', 'We build on the same applications where they fit, add monitoring and alerts, and fix things when they break.'],
+  ['A large consultancy', 'Long discovery, large teams, and a bill that grows with the hours.', 'A named person, a tailored proposal, and a delivery plan based on your requirements.'],
 ];
 
 // Supplied by the owner on 6 November 2026.
-export const OWNER = { name: 'Krunal Rajput', role: 'Founder', phone: '+91 93940 67145', tel: '+919394067145' };
-export const phoneLink = (cls = '') => `<a class="${cls}" href="tel:${OWNER.tel}">${OWNER.phone}</a>`;
+export const OWNER = { name: 'Krunal Rajput', role: 'CEO & Founder', email: 'krunal@ziuai.ai', address: '11th Floor, Shaligram Corporates, Iscon Ambali Road, Ahmedabad 380058' };

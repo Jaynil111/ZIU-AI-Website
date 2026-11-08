@@ -1,5 +1,5 @@
-import { btn, link, kicker, pageHero, ctaBand, sectionIndex, icon, founderFeature, CTA } from './components.mjs';
-import { USE_CASES, SERVICE_DETAILS, PILLARS, ENGAGEMENTS, FAQS, INDUSTRIES, REGIONS, TOOLS, COMPARE, OWNER, phoneLink } from './data.mjs';
+import { btn, link, productPortfolio, kicker, pageHero, ctaBand, sectionIndex, icon, founderFeature, CTA } from './components.mjs';
+import { USE_CASES, SERVICE_DETAILS, PILLARS, ENGAGEMENTS, FAQS, INDUSTRIES, REGIONS, APPLICATIONS, COMPARE, OWNER } from './data.mjs';
 import { home, homeIndex, faq } from './home.mjs';
 
 import { FORMS, formSettings } from './site.config.mjs';
@@ -15,7 +15,6 @@ const formHidden = (name, subject) => `
       <input type="hidden" name="page" value="">
       <p class="hp" aria-hidden="true"><label>Leave this field empty <input type="text" name="${FS.honeypot}" tabindex="-1" autocomplete="off"></label></p>`;
 const formError = `<p class="form__error" data-form-error role="alert" tabindex="-1" hidden></p>`;
-const notConnected = FS.provider ? '' : '<p class="muted">[Form not connected: set a provider in src/site.config.mjs before launch.]</p>';
 
 const pad = (i) => String(i + 1).padStart(2, '0');
 const bullets = (items, cls = 'ticks') => `<ul class="${cls}">${items.map((i) => `<li>${i}</li>`).join('')}</ul>`;
@@ -36,7 +35,7 @@ ${pageHero({ kick: 'Services', title: 'AI consulting, automation and software, d
         <p class="lede">${s.body}</p>
         ${bullets(s.items)}
       </article>`; }).join('')}`).join('')}
-      <p class="aside-note" data-reveal>Not sure which you need? ${link('Book a 30-minute call', '/contact/#book')} and we will tell you.</p>
+      <p class="aside-note" data-reveal>Not sure which you need? ${link('Book a call', '/contact/#book')} and we will tell you.</p>
     </div>
   </div>
 </section>
@@ -72,7 +71,6 @@ ${pageHero({ kick: 'Solutions', title: 'What AI can take off your team’s plate
         <h3 class="h2">${s.name}</h3>
         <p class="sector__for"><span>For</span> ${s.for}</p>
         <p>${s.body}</p>
-        <p class="sector__proof"><span>Proof</span> [Add a case study for this sector when available]</p>
       </article>`).join('')}
     </div>
   </div>
@@ -100,9 +98,7 @@ ${pageHero({ kick: `Solution ${pad(i)} of 06`, title: u.name, sub: u.example, ac
     </div>
   </div>
 </section>
-<section class="section section--rule" aria-label="Proof for this solution">
-  <div class="wrap" data-reveal><p class="muted">[Add a measured case study for ${u.name.toLowerCase()} when available: baseline, result, period and method.]</p></div>
-</section>
+
 <nav class="pager wrap" aria-label="More solutions">
   <a href="/use-cases/${prev.slug}/"><span>Previous</span>${prev.name}</a>
   <a href="/use-cases/"><span>All</span>Solutions</a>
@@ -112,9 +108,9 @@ ${ctaBand()}`;
 };
 
 const pricing = () => `
-<!-- Editor: fill in the three starting prices. Once 5–10 projects are complete, consider publishing typical ranges too. -->
-${pageHero({ kick: 'Pricing', title: 'Clear scope. Fixed price. Cancel anytime.', sub: 'Three ways to start. Every project is quoted in writing before work begins, and there is no hourly billing.', actions: btn(CTA.book) })}
-<section class="section" aria-label="Engagements and starting prices">
+<!-- Pricing is scoped individually; do not publish standard package amounts. -->
+${pageHero({ kick: 'Pricing', title: 'Your requirements. Your scope. Your quote.', sub: 'Every business needs something different. We review your requirements, integrations and support needs, then prepare a proposal tailored to your project.', actions: btn(CTA.book) })}
+<section class="section" aria-label="Engagements and custom pricing">
   <div class="wrap">
     <ol class="eng" data-progress>
       ${ENGAGEMENTS.map((e) => `<li class="eng__item" data-reveal data-progress-item>
@@ -130,17 +126,17 @@ ${pageHero({ kick: 'Pricing', title: 'Clear scope. Fixed price. Cancel anytime.'
 </section>
 <section class="section section--rule" aria-label="What is included and what we need">
   <div class="wrap two-lists">
-    <div data-reveal>${kicker('A', 'Every project includes')}${bullets(['A fixed written quote before work starts', 'No hourly billing', 'A named lead you can contact directly', 'Automations and code built in your own accounts', 'Full documentation and handover', 'The option to stop after discovery'], 'ticks ticks--lg')}</div>
-    <div data-reveal>${kicker('B', 'What we need from you')}${bullets(['A decision-maker for the 30-minute call', 'Access to the people who do the work today', 'Admin access to the tools involved, for the build period', 'Prompt feedback during testing'], 'ticks ticks--lg ticks--plain')}<p class="aside-note">${link('Estimate what a task costs you', '/resources/#savings')}</p></div>
+    <div data-reveal>${kicker('A', 'Every project includes')}${bullets(['A proposal based on your requirements before work starts', 'Scope, pricing and billing terms agreed with you', 'A named lead you can contact directly', 'Automations and code built in your own accounts', 'Full documentation and handover', 'The option to stop after discovery'], 'ticks ticks--lg')}</div>
+    <div data-reveal>${kicker('B', 'What we need from you')}${bullets(['A decision-maker for the 30-minute call', 'Access to the people who do the work today', 'Admin access to the applications involved, for the build period', 'Prompt feedback during testing'], 'ticks ticks--lg ticks--plain')}<p class="aside-note">${link('Estimate what a task costs you', '/resources/#savings')}</p></div>
   </div>
 </section>
 <section class="section section--rule" aria-labelledby="quote-title">
   <div class="wrap split">
-    <div data-reveal>${kicker('C', 'How quoting works')}<h2 id="quote-title" class="h1">Three steps to a fixed price.</h2></div>
+    <div data-reveal>${kicker('C', 'How quoting works')}<h2 id="quote-title" class="h1">From your requirements to a tailored proposal.</h2></div>
     <ol class="next-steps" data-reveal>
-      <li>A 30-minute call. We ask about your processes, tools and what a good result looks like.</li>
-      <li>Within [one business day], a written quote for discovery or a first build, with what is included and what is not.</li>
-      <li>You decide. The quote stands for 30 days and nothing starts until you say so.</li>
+      <li>A 30-minute call. We ask about your processes, applications and what a good result looks like.</li>
+      <li>We assess the scope, complexity, integrations and support needed, then share a tailored proposal with clear inclusions.</li>
+      <li>We agree on the scope, pricing and billing terms together. Work begins after your approval; scope changes are discussed before proceeding.</li>
     </ol>
   </div>
 </section>
@@ -148,7 +144,7 @@ ${pageHero({ kick: 'Pricing', title: 'Clear scope. Fixed price. Cancel anytime.'
   <div class="wrap">
     <div data-reveal>${kicker('D', 'The alternatives')}<h2 id="compare-title" class="h1">Why not hire, do it yourself, or call a big firm?</h2></div>
     <div class="table-wrap" data-reveal>
-      <table class="tool-table">
+      <table class="application-table">
         <thead><tr><th scope="col">Option</th><th scope="col">What usually happens</th><th scope="col">With ZIU AI</th></tr></thead>
         <tbody>${COMPARE.map(([o, a, b]) => `<tr><th scope="row">${o}</th><td data-label="What usually happens">${a}</td><td data-label="With ZIU AI">${b}</td></tr>`).join('')}</tbody>
       </table>
@@ -157,42 +153,13 @@ ${pageHero({ kick: 'Pricing', title: 'Clear scope. Fixed price. Cancel anytime.'
 </section>
 ${ctaBand({ actions: btn(CTA.book) })}`;
 
-const caseTemplate = [
-  ['Title', '[Client or “ZIU AI internal”]: [what changed]'],
-  ['The situation', '[2–3 sentences: the team, the process and the problem, with the baseline figure]'],
-  ['What we built', '[2–3 sentences in plain language: tools connected, what the automation does, where a person approves]'],
-  ['The result', '[Before] to [After], measured over [period] using [method, e.g. CRM timestamps]'],
-  ['In their words', '“[Quote]” — [Full name], [Role], [Company] (with written permission)'],
-  ['Timeline', '[Weeks from discovery to launch]'],
-];
-
-const caseStudies = () => `
-<!-- Editor: publish three internal case studies, labelled "ZIU AI internal", measured for at least four weeks. -->
-${pageHero({ kick: 'Results', title: 'Results, and how we measured them.', sub: 'Every case states the starting point, the change and the period measured. Nothing is published before it has run for at least four weeks.' })}
-<section class="section" aria-labelledby="internal-title">
-  <div class="wrap">
-    <div class="split split--head" data-reveal>
-      <div>${kicker('01', 'ZIU AI internal')}<h2 id="internal-title" class="h1">Starting with our own operations.</h2></div>
-      <p class="lede">Each case study shows the starting point, what we built, the result and the period measured.</p>
-    </div>
-    <div class="case-stack">
-      ${['Lead intake and first reply', 'Proposal and quote drafting', 'Invoicing and payment follow-up'].map((t) => `<article class="case-full" data-reveal>
-        <header><p class="case-full__tag">ZIU AI internal</p><h3 class="h2">${t}: [what changed]</h3></header>
-        <dl class="case-full__body">${caseTemplate.slice(1).map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>
-      </article>`).join('')}
-    </div>
-  </div>
-</section>
-<section class="section section--dark" data-theme="dark" aria-labelledby="founding-title">
-  <div class="wrap split" data-reveal>
-    <div>${kicker('02', 'Founding clients', 'kicker--light')}<h2 id="founding-title" class="h1">Become a founding client.</h2></div>
-    <div><p class="lede lede--light">We are working with a small number of founding clients at a reduced price. In return, we ask for permission to publish a measured case study and a named review when the work is complete.</p>
-    <div class="actions">${btn({ label: 'Ask about a founding-client place', href: '/contact/?topic=founding' })}</div></div>
-  </div>
-</section>`;
+const portfolio = () => `
+${pageHero({ kick: 'Product portfolio', title: 'Software we have created.', sub: 'Explore our products and applications.' })}
+<section class="section" aria-labelledby="products-title"><div class="wrap"><h2 id="products-title" class="sr-only">Our products</h2>${productPortfolio()}</div></section>
+${ctaBand()}`;
 
 const howWeWork = () => `
-${pageHero({ kick: 'How we work', title: 'How a project runs, start to finish.', sub: 'Four steps, a fixed price, and one person accountable throughout. We tell you when something is not worth automating.', actions: btn(CTA.book) })}
+${pageHero({ kick: 'How we work', title: 'How a project runs, start to finish.', sub: 'Four steps, pricing tailored to your requirements, and one person accountable throughout. We tell you when something is not worth automating.', actions: btn(CTA.book) })}
 <section class="section" aria-labelledby="steps-title">
   <div class="wrap">
     <h2 id="steps-title" class="sr-only">The four steps</h2>
@@ -218,7 +185,7 @@ ${pageHero({ kick: 'How we work', title: 'How a project runs, start to finish.',
   <div class="wrap split">
     <div data-reveal>${kicker('B', 'Principles')}<h2 id="principles-title" class="h1">Our principles</h2></div>
     <ol class="principles" data-reveal>
-      ${['We tell you when something is not worth automating.', 'We measure before we claim.', 'We choose tools for your situation, not ours.', 'We write in plain language.', 'We stay until it works in daily use.'].map((t) => `<li>${t}</li>`).join('')}
+      ${['We tell you when something is not worth automating.', 'We measure before we claim.', 'We choose applications for your situation, not ours.', 'We write in plain language.', 'We stay until it works in daily use.'].map((t) => `<li>${t}</li>`).join('')}
     </ol>
   </div>
 </section>
@@ -236,7 +203,6 @@ ${pageHero({ kick: 'Industries', title: 'Automation shaped to your sector.', sub
         <p class="sector__for"><span>For</span> ${s.for}</p>
         <p>${s.body}</p>
         <p class="sector__for"><span>First</span> Typical first project: ${s.first}</p>
-        <p class="sector__proof"><span>Proof</span> [Add a case study for this sector when available]</p>
       </article>`).join('')}
     </div>
   </div>
@@ -248,26 +214,20 @@ ${pageHero({ kick: 'About', title: 'We build what we would run ourselves.', sub:
 <section class="section" aria-labelledby="story-title">
   <div class="wrap split">
     <div data-reveal>${kicker('01', 'Why ZIU AI exists')}<h2 id="story-title" class="h1">Our story</h2></div>
-    <div data-reveal><p class="lede">[2–3 sentences in the founder’s voice: why ZIU AI was started, the problem you saw in businesses, and what you do differently. Facts only.]</p></div>
-  </div>
-</section>
-<section class="section section--rule" aria-labelledby="name-title">
-  <div class="wrap split">
-    <div data-reveal>${kicker('02', 'The name')}<h2 id="name-title" class="h2">What ZIU AI stands for</h2></div>
-    <div data-reveal><p class="lede">[Explain the name, if it has a meaning you want to share. Otherwise delete this block.]</p></div>
+    <div data-reveal><p class="lede">Zinzuwadia Group began 20 years ago as an audit and advisory business. Over the years, the group has grown to encompass six verticals. ZIU AI is its latest addition, extending that foundation into AI consulting, automation and custom software.</p></div>
   </div>
 </section>
 <section class="section section--rule" aria-labelledby="team-title">
   <div class="wrap">
-    <div class="split split--head" data-reveal><div>${kicker('03', 'Team')}<h2 id="team-title" class="h1">Who you will work with.</h2></div><p class="lede">You deal with the founder directly, from the first call to the monthly report.</p></div>
-    ${founderFeature({ experience: '[Relevant experience as fact.]', extra: '<p>[LinkedIn link]</p>' })}
+    <div class="split split--head" data-reveal><div>${kicker('02', 'Team')}<h2 id="team-title" class="h1">Who you will work with.</h2></div><p class="lede">You deal with the founder directly, from the first call to the monthly report.</p></div>
+    ${founderFeature()}
   </div>
 </section>
 <section class="section section--dark" data-theme="dark" aria-labelledby="where-title">
   <div class="wrap split">
-    <div data-reveal>${kicker('04', 'Regions', 'kicker--light')}<h2 id="where-title" class="h1">Where we work</h2></div>
+    <div data-reveal>${kicker('03', 'Regions', 'kicker--light')}<h2 id="where-title" class="h1">Where we work</h2></div>
     <div data-reveal>
-      <p class="lede lede--light">We work with businesses in the USA &amp; Canada, the UK &amp; Europe, the UAE &amp; Gulf, and India. [State team locations and time zones covered.]</p>
+      <p class="lede lede--light">We work with businesses in the USA &amp; Canada, the UK &amp; Europe, the UAE &amp; Gulf, and India.</p>
       <ul class="region-links">${REGIONS.map((r) => `<li><a href="/regions/${r.slug}/">${r.name.replace('&', '&amp;')}<span aria-hidden="true">→</span></a></li>`).join('')}</ul>
     </div>
   </div>
@@ -275,20 +235,20 @@ ${pageHero({ kick: 'About', title: 'We build what we would run ourselves.', sub:
 ${ctaBand({ actions: btn(CTA.book) })}`;
 
 const resources = () => `
-${pageHero({ kick: 'Resources', title: 'Guides, tools and answers before you start.', sub: 'Frequently asked questions · Tool choice guide · Savings calculator · Automation check' })}
+${pageHero({ kick: 'Resources', title: 'Guides, applications and answers before you start.', sub: 'Frequently asked questions · Application choice guide · Savings calculator · Automation check' })}
 <section class="section" id="faq" aria-labelledby="faq-title">
   <div class="wrap faq-sec__grid">
     <div data-reveal>${kicker('01', 'FAQ')}<h2 id="faq-title" class="h1">Frequently asked questions</h2></div>
     <div data-reveal>${faq(FAQS)}</div>
   </div>
 </section>
-<section class="section section--rule" id="tool-guide" aria-labelledby="tools-title">
+<section class="section section--rule" id="application-guide" aria-labelledby="applications-title">
   <div class="wrap">
-    <div data-reveal>${kicker('02', 'Tool choice guide')}<h2 id="tools-title" class="h1">Zapier, Make, n8n or custom code: how we choose.</h2></div>
+    <div data-reveal>${kicker('02', 'Application choice guide')}<h2 id="applications-title" class="h1">Zapier, Make, n8n or custom code: how we choose.</h2></div>
     <div class="table-wrap" data-reveal>
-      <table class="tool-table">
+      <table class="application-table">
         <thead><tr><th scope="col">Option</th><th scope="col">Best when</th><th scope="col">Watch out for</th></tr></thead>
-        <tbody>${TOOLS.map(([o, b, w]) => `<tr><th scope="row">${o}</th><td data-label="Best when">${b}</td><td data-label="Watch out for">${w}</td></tr>`).join('')}</tbody>
+        <tbody>${APPLICATIONS.map(([o, b, w]) => `<tr><th scope="row">${o}</th><td data-label="Best when">${b}</td><td data-label="Watch out for">${w}</td></tr>`).join('')}</tbody>
       </table>
     </div>
   </div>
@@ -337,70 +297,37 @@ ${pageHero({ kick: 'Resources', title: 'Guides, tools and answers before you sta
 </section>
 <section class="section section--dark" id="automation-check" data-theme="dark" aria-labelledby="check-title">
   <div class="wrap split" data-reveal>
-    <div>${kicker('04', 'Automation check', 'kicker--light')}<h2 id="check-title" class="h1">Find your first automation in 5 minutes.</h2></div>
-    <div><p class="lede lede--light">Answer a few questions. We email you a short list of likely candidates and, if useful, an invitation to a 30-minute call.</p>
+    <div>${kicker('04', 'Automation check', 'kicker--light')}<h2 id="check-title" class="h1">Find your first automation.</h2></div>
+    <div><p class="lede lede--light">Tell us about one repetitive task. We will suggest where to start.</p>
     <div class="actions">${btn(CTA.check)}</div></div>
   </div>
 </section>`;
 
-const field = (label, input, hint = '') => `<div class="field"><label>${label}${hint ? `<span class="field__hint">${hint}</span>` : ''}</label>${input}</div>`;
 const fieldFor = (id, label, input, hint = '') => `<div class="field"><label for="${id}">${label}${hint ? ` <span class="field__hint">${hint}</span>` : ''}</label>${input}</div>`;
-const regionOptions = `<option value="">Choose a region</option>${REGIONS.map((r) => `<option>${r.name.replace('&', '&amp;')}</option>`).join('')}<option>Elsewhere</option>`;
 
 const automationCheck = () => `
-${pageHero({ kick: 'Automation check', title: 'Find your first automation in 5 minutes.', sub: 'Answer a few questions. We email you a short list of likely candidates and, if useful, an invitation to a 30-minute call.' })}
-<section class="section" aria-label="Automation check questionnaire">
+${pageHero({ kick: 'Quick automation check', title: 'Find your first automation.', sub: 'Tell us about one repetitive task. We will suggest where to start.' })}
+<section class="section section--compact" aria-label="Quick automation check">
   <div class="wrap form-wrap">
-    <form class="form form--steps" ${formAttrs('automation-check')}>${formHidden('automation-check', 'Automation check')}
-      <div class="form__progress"><p data-step-count aria-live="polite">Step 1 of 4</p><div class="form__bar" data-step-bar></div></div>
-      <fieldset data-form-step>
-        <legend class="h2">Your team</legend>
-        ${fieldFor('ac-size', 'Team size', `<select id="ac-size" name="team_size" required><option value="">Choose</option><option>1–10</option><option>11–50</option><option>51–200</option><option>201–500</option><option>500+</option></select>`)}
-        ${fieldFor('ac-region', 'Region', `<select id="ac-region" name="region" required>${regionOptions}</select>`)}
-      </fieldset>
-      <fieldset data-form-step hidden>
-        <legend class="h2">Your three most repetitive tasks</legend>
-        <p class="muted">And roughly how many hours a week each one takes.</p>
-        ${[1, 2, 3].map((n) => `<div class="field-row">
-          ${fieldFor(`ac-task${n}`, `Task ${n}`, `<input id="ac-task${n}" name="task_${n}" type="text" ${n === 1 ? 'required' : ''} placeholder="${['e.g. Copying inquiries into the CRM', 'e.g. Chasing unpaid invoices', 'e.g. Building the weekly report'][n - 1]}">`)}
-          ${fieldFor(`ac-hours${n}`, 'Hours a week', `<input id="ac-hours${n}" name="hours_${n}" type="number" min="0" max="168" step="0.5" inputmode="decimal" ${n === 1 ? 'required' : ''}>`)}
-        </div>`).join('')}
-      </fieldset>
-      <fieldset data-form-step hidden>
-        <legend class="h2">Tools and approvals</legend>
-        <div class="field"><p class="field__label" id="ac-tools-l">Tools used</p>
-          <div class="checks" role="group" aria-labelledby="ac-tools-l">${['Microsoft 365', 'Google Workspace', 'HubSpot', 'Salesforce', 'Zapier', 'Make', 'n8n', 'Accounting software', 'Other'].map((t) => `<label class="check"><input type="checkbox" name="tools" value="${t}"><span>${t}</span></label>`).join('')}</div>
-        </div>
-        ${fieldFor('ac-other', 'Other tools', `<input id="ac-other" name="tools_other" type="text">`, '(optional)')}
-        ${fieldFor('ac-approve', 'Who approves the work today?', `<input id="ac-approve" name="approver" type="text" required placeholder="e.g. Office manager, finance lead">`)}
-      </fieldset>
-      <fieldset data-form-step hidden>
-        <legend class="h2">Where should we send your summary?</legend>
+    <form class="form form--single" ${formAttrs('automation-check')}>${formHidden('automation-check', 'Quick automation check')}
+      <div class="field-row">
         ${fieldFor('ac-name', 'Name', `<input id="ac-name" name="name" type="text" autocomplete="name" required>`)}
         ${fieldFor('ac-email', 'Work email', `<input id="ac-email" name="email" type="email" autocomplete="email" required>`)}
-        <p class="consent">We use your details only to reply to your inquiry. See our <a href="/privacy/">privacy policy</a>.</p>
-      </fieldset>
-      ${formError}
-      <div class="form__nav">
-        <button type="button" class="btn btn--ghost" data-prev hidden><span>Back</span></button>
-        <button type="button" class="btn btn--primary" data-next><span>Continue</span></button>
-        <button type="submit" class="btn btn--primary" hidden><span>Send my answers</span></button>
       </div>
+      ${fieldFor('ac-task', 'Which task would you like to automate?', `<textarea id="ac-task" name="task" rows="3" required placeholder="Briefly describe the repetitive work."></textarea>`)}
+      ${fieldFor('ac-applications', 'Applications you use', `<input id="ac-applications" name="applications" type="text" placeholder="e.g. Microsoft 365, your CRM or accounting software">`, '(optional)')}
+      <p class="consent">We use your details only to reply to your inquiry. See our <a href="/privacy/">privacy policy</a>.</p>
+      ${formError}
+      <button type="submit" class="btn btn--primary"><span>Send my request</span></button>
     </form>
-    <div class="form-done" data-form-done tabindex="-1" hidden>
-      <h2 class="h2">Thank you.</h2>
-      <p>We will email a short list of likely candidates within [one business day].</p>
-      ${notConnected}
-      <div class="actions">${btn(CTA.book)}</div>
-    </div>
+    <div class="form-done" data-form-done tabindex="-1" hidden><h2 class="h2">Request received.</h2><p>We will review your task and reply by email.</p></div>
   </div>
 </section>`;
 
 const regionPage = (r) => {
   const others = REGIONS.filter((o) => o.slug !== r.slug);
   return `
-<!-- Editor: confirm each data protection statement with legal counsel before publishing. -->
-${pageHero({ kick: `Regions · ${r.name.replace('&', '&amp;')}`, title: r.title, sub: 'The same services and fixed prices, with invoicing, hours and data protection set for your region.', actions: btn(CTA.book) })}
+${pageHero({ kick: `Regions · ${r.name.replace('&', '&amp;')}`, title: r.title, sub: 'The same services with pricing tailored to your requirements, and invoicing and data handling agreed for your project.', actions: btn(CTA.book) })}
 <section class="section" aria-label="${r.name.replace('&', '&amp;')} details">
   <div class="wrap split">
     <div data-reveal>${kicker('01', 'The details')}<p class="lede">What changes by region, and what does not.</p></div>
@@ -412,72 +339,82 @@ ${ctaBand()}`;
 };
 
 const contact = () => `
-${pageHero({ kick: 'Contact', title: 'Tell us what takes too much of your team’s time.', sub: 'Book a 30-minute call, or send a message and we will reply within [one business day].', actions: btn({ label: 'Book a 30-minute call', href: '#book' }) })}
-<section class="section" aria-label="Book or message">
-  <div class="wrap contact">
-    <div class="contact__book" id="book" data-reveal>
-      ${kicker('A', 'Book a call')}
-      <h2 class="h2">Book a 30-minute call</h2>
-      <div class="booking-slot"><p>[Booking calendar embed: 30-minute call]</p></div>
-      ${kicker('B', 'What happens next')}
-      <ol class="next-steps">
-        <li>We reply within [one business day] to confirm a time.</li>
-        <li>On the call, we ask about your processes and tools.</li>
-        <li>You leave with three processes worth automating, whether or not we work together.</li>
-        <li>If it makes sense, we send a fixed written quote for discovery or a first build.</li>
-      </ol>
-      <p class="contact__direct">${OWNER.name}, ${OWNER.role}<br>${phoneLink('tlink')} · [email]<br>[business address]</p>
+<section class="booking-page" id="book" aria-labelledby="booking-title">
+  <div class="wrap booking-layout">
+    <div class="booking-intro">
+      ${kicker('01', 'Let’s talk')}
+      <h1 class="display" id="booking-title">Book a call.</h1>
+      <p class="lede">Tell us what you want to build or automate. We will email you to arrange a 30-minute conversation.</p>
+      <p class="contact__direct">${OWNER.name}, ${OWNER.role}<br><a class="tlink" href="mailto:${OWNER.email}">${OWNER.email}</a></p>
+      <p class="contact__address">${OWNER.address}</p>
     </div>
-    <div class="contact__form" data-reveal>
-      ${kicker('C', 'Send a message')}
-      <form class="form" ${formAttrs('contact')}>${formHidden('contact', 'Contact inquiry')}
+    <div class="booking-form">
+      <form class="form form--single" ${formAttrs('contact')}>${formHidden('contact', 'Call request')}
         <div class="field-row">
           ${fieldFor('c-name', 'Name', `<input id="c-name" name="name" type="text" autocomplete="name" required>`)}
           ${fieldFor('c-email', 'Work email', `<input id="c-email" name="email" type="email" autocomplete="email" required>`)}
         </div>
-        ${fieldFor('c-company', 'Company and website', `<input id="c-company" name="company" type="text" autocomplete="organization">`)}
-        <div class="field-row">
-          ${fieldFor('c-region', 'Region', `<select id="c-region" name="region" required>${regionOptions}</select>`)}
-          ${fieldFor('c-size', 'Team size', `<select id="c-size" name="team_size"><option value="">Choose</option><option>1–10</option><option>11–50</option><option>51–200</option><option>201–500</option><option>500+</option></select>`)}
-        </div>
-        ${fieldFor('c-msg', 'What would you like to automate or build?', `<textarea id="c-msg" name="message" rows="5" required></textarea>`)}
-        <fieldset class="field"><legend class="field__label">Preferred contact</legend>
-          <div class="checks">${['Email', 'Phone', 'WhatsApp'].map((t, i) => `<label class="check"><input type="radio" name="preferred" value="${t}" ${i === 0 ? 'checked' : ''}><span>${t}</span></label>`).join('')}</div>
-        </fieldset>
+        ${fieldFor('c-company', 'Company', `<input id="c-company" name="company" type="text" autocomplete="organization">`, '(optional)')}
+        ${fieldFor('c-msg', 'What would you like to build or automate?', `<textarea id="c-msg" name="message" rows="3" required placeholder="A sentence or two is enough."></textarea>`)}
         <p class="consent">We use your details only to reply to your inquiry. See our <a href="/privacy/">privacy policy</a>.</p>
         ${formError}
-        <button type="submit" class="btn btn--primary"><span>Send message</span></button>
+        <button type="submit" class="btn btn--primary"><span>Request a call</span></button>
       </form>
-      <div class="form-done" data-form-done tabindex="-1" hidden>
-        <h2 class="h2">Thank you.</h2>
-        <p>We will reply within [one business day].</p>
-        ${notConnected}
-      </div>
+      <div class="form-done" data-form-done tabindex="-1" hidden><h2 class="h2">Request received.</h2><p>We will email you to arrange a time for your call.</p></div>
     </div>
   </div>
 </section>`;
 
-const placeholderPage = (kick, title, body) => `
+const simplePage = (kick, title, body) => `
 ${pageHero({ kick, title })}
 <section class="section"><div class="wrap narrow"><p class="lede">${body}</p></div></section>`;
 
+
+const informationPage = (title, sections) => `
+${pageHero({ kick: 'ZIU AI LLP', title })}
+<section class="section"><div class="wrap narrow legal-copy">
+  <p class="muted">Updated 8 November 2026</p>
+  ${sections.map(([heading, body]) => `<section><h2 class="h3">${heading}</h2>${body}</section>`).join('')}
+</div></section>`;
+
+const privacy = () => informationPage('Privacy policy', [
+  ['Who we are', `<p>ZIU AI LLP operates this website. For questions about your information, email <a href="mailto:${OWNER.email}">${OWNER.email}</a> or write to us at ${OWNER.address}.</p>`],
+  ['Information you share', '<p>Our contact and automation-check forms collect your name, email address and message. You can also choose to share your company name or the applications you use. A submission includes the page from which it was sent. Please avoid sending passwords, financial account details or sensitive personal information through these forms.</p>'],
+  ['How inquiries are handled', '<p>We use the details you provide to respond to your inquiry, understand your requirements and arrange a conversation. Submitting an inquiry does not subscribe you to a marketing newsletter.</p>'],
+  ['Form delivery and service providers', '<p>Our forms use Web3Forms to process submissions and deliver them by email. Web3Forms and its infrastructure providers may process submission data and technical information, including IP addresses, for delivery and spam prevention in multiple countries. Its <a href="https://web3forms.com/privacy" rel="noopener">privacy policy</a> describes its processing and retention practices. Email and website hosting providers may also process messages and technical logs to operate these services.</p>'],
+  ['Cookies and browser storage', '<p>This website does not include analytics or marketing cookies. It uses browser session storage to remember your homepage scroll position during navigation. You can clear browser storage in your browser settings. Fonts and visual assets are served with the website.</p>'],
+  ['Your information and requests', `<p>To ask about information you have sent us, or request access, correction or deletion, email <a href="mailto:${OWNER.email}">${OWNER.email}</a>. We may need to confirm your identity to handle a request. Any retention needed for an ongoing engagement or an applicable legal obligation will be considered when responding.</p>`],
+  ['Other websites and updates', '<p>Product and other external links take you to websites with their own privacy practices. This policy describes the current website; updates will appear here with a revised date.</p>'],
+]);
+
+const terms = () => informationPage('Terms', [
+  ['About this website', `<p>This website is operated by ZIU AI LLP, ${OWNER.address}. Contact us at <a href="mailto:${OWNER.email}">${OWNER.email}</a> with questions about the website or our services.</p>`],
+  ['Information and estimates', '<p>Service descriptions and workflow examples explain the kinds of work we can discuss with you. Timelines and savings calculations are indicative and depend on your requirements, systems, data and team availability. They are not a binding quotation or a guarantee of results.</p>'],
+  ['Project agreements and pricing', '<p>Every project is priced according to its requirements. Scope, deliverables, fees, billing, timelines, support, ownership and any cancellation terms are set out in a separate written agreement. Submitting a form or requesting a call does not create a paid engagement. Changes to an agreed scope are discussed before proceeding.</p>'],
+  ['Using the website', '<p>Please use the website lawfully. Do not attempt to disrupt its operation, gain unauthorized access or submit malicious or misleading material. Share only information you are entitled to provide.</p>'],
+  ['Content and external links', '<p>Website branding and content belong to their respective owners. Third-party materials remain subject to their own licenses. External links, including portfolio products, may have separate terms and privacy policies.</p>'],
+  ['Privacy and contact', `<p>Our <a href="/privacy/">privacy policy</a> explains how website inquiries are handled. For assistance or to report an issue, email <a href="mailto:${OWNER.email}">${OWNER.email}</a>.</p>`],
+  ['Audio credits', '<p id="credits">The interactive homepage uses recordings from <a href="https://github.com/sfzinstruments/SalamanderGrandPiano" rel="noopener">Salamander Grand Piano</a> by Alexander Holm, licensed under <a href="https://creativecommons.org/licenses/by/3.0/" rel="noopener license">CC BY 3.0</a>. Selected recordings are converted to MP3 and pitch-shifted during playback.</p>'],
+]);
+
 export const PAGES = [
-  { path: '/', title: 'ZIU AI | AI Consulting, Automation and Custom Software', description: 'ZIU AI helps growing businesses decide where AI pays off, builds the automations, tools and software, and keeps them running. Fixed prices. First process live in about 30 days.', main: home(), home: true, index: homeIndex },
+  { path: '/', title: 'ZIU AI | AI Consulting, Automation and Custom Software', description: 'ZIU AI helps growing businesses decide where AI pays off, builds the automations, applications and software, and keeps them running. Pricing based on your requirements. First process live in about 30 days.', main: home(), home: true, index: homeIndex },
   { path: '/services/', title: 'AI Consulting, Automation and Software Services | ZIU AI', description: 'AI strategy, discovery, workflow automation, AI assistants, custom software, integration, and ongoing support for growing businesses.', main: services() },
   { path: '/use-cases/', title: 'AI Automation Solutions by Team and Industry | ZIU AI', description: 'What AI can take off your team: sales, support, finance, operations, HR and reporting, plus the sectors we know best.', main: useCases() },
   ...USE_CASES.map((u, i) => ({ path: `/use-cases/${u.slug}/`, title: `${u.name} automation | ZIU AI`, description: u.example, main: useCasePage(u, i) })),
-  { path: '/pricing/', title: 'Pricing | ZIU AI', description: 'Fixed prices, no hourly billing. Starting prices for discovery, a first automation and a monthly run-and-improve plan.', main: pricing() },
-  { path: '/case-studies/', title: 'Results | ZIU AI', description: 'Measured results from AI automation projects, with the baseline, method and period shown for each.', main: caseStudies() },
-  { path: '/how-we-work/', title: 'How We Work | ZIU AI', description: 'Our four-step method: map, build, launch, run. Fixed prices, human approval and clear data handling.', main: howWeWork() },
+  { path: '/pricing/', title: 'Pricing | ZIU AI', description: 'Custom pricing based on your requirements, scope, complexity and support needs. Request a tailored proposal for your project.', main: pricing() },
+  { path: '/portfolio/', title: 'Product Portfolio | ZIU AI', description: 'Explore products and applications created by ZIU AI.', main: portfolio() },
+  { path: '/case-studies/', title: 'Explore Our Products | ZIU AI', description: 'View the ZIU AI product portfolio and explore DTAXO.', main: portfolio() },
+  { path: '/how-we-work/', title: 'How We Work | ZIU AI', description: 'Our four-step method: map, build, launch, run. Custom pricing, human approval and clear data handling.', main: howWeWork() },
   { path: '/industries/', title: 'Industries | ZIU AI', description: 'AI automation for professional services, real estate and property, e-commerce and retail, and healthcare clinics.', main: industries() },
   { path: '/about/', title: 'About ZIU AI', description: 'A founder-led AI consulting and automation firm working with businesses in the USA & Canada, the UK & Europe, the UAE & Gulf, and India.', main: about() },
-  { path: '/resources/', title: 'Resources | ZIU AI', description: 'Frequently asked questions, a tool choice guide, a savings calculator and a 5-minute automation check.', main: resources() },
-  { path: '/automation-check/', title: 'Automation Check | ZIU AI', description: 'Find your first automation in 5 minutes.', main: automationCheck() },
+  { path: '/resources/', title: 'Resources | ZIU AI', description: 'Frequently asked questions, an application choice guide, a savings calculator and a quick automation check.', main: resources() },
+  { path: '/automation-check/', title: 'Automation Check | ZIU AI', description: 'Find your first automation.', main: automationCheck() },
   ...REGIONS.map((r) => ({ path: `/regions/${r.slug}/`, title: `AI Consulting and Automation in ${r.name.replace('&', '&amp;')} | ZIU AI`, description: r.title, main: regionPage(r) })),
-  { path: '/contact/', title: 'Contact ZIU AI', description: 'Book a 30-minute call with ZIU AI, or send a message.', main: contact() },
-  { path: '/careers/', title: 'Careers | ZIU AI', description: 'Careers at ZIU AI.', main: placeholderPage('Careers', 'Work with us', '[Careers content not yet supplied.]') },
-  { path: '/privacy/', title: 'Privacy policy | ZIU AI', description: 'ZIU AI privacy policy.', main: placeholderPage('Legal', 'Privacy policy', '[Privacy policy to be supplied and reviewed by legal counsel before launch.]') },
-  { path: '/terms/', title: 'Terms | ZIU AI', description: 'ZIU AI terms.', main: placeholderPage('Legal', 'Terms', '[Terms to be supplied and reviewed by legal counsel before launch.]') },
+  { path: '/contact/', title: 'Book a Call | ZIU AI', description: 'Tell us what you want to build or automate. Request a call with ZIU AI in one simple step.', main: contact() },
+  { path: '/careers/', title: 'Careers | ZIU AI', description: 'Careers at ZIU AI.', main: simplePage('Careers', 'Work with us', `Interested in building practical AI and automation solutions? Email <a href="mailto:${OWNER.email}">${OWNER.email}</a> with a short introduction, your experience and links to your work to discuss opportunities with ZIU AI.`) },
+  { path: '/privacy/', title: 'Privacy policy | ZIU AI', description: 'ZIU AI privacy policy.', main: privacy() },
+  { path: '/terms/', title: 'Terms | ZIU AI', description: 'ZIU AI terms.', main: terms() },
 ];
 
-export const NOT_FOUND = { path: '/404.html', title: 'Page not found | ZIU AI', description: 'Page not found.', main: placeholderPage('404', 'This page is not here.', 'Try the <a class="tlink" href="/">home page</a> or <a class="tlink" href="/contact/">get in touch</a>.') };
+export const NOT_FOUND = { path: '/404.html', title: 'Page not found | ZIU AI', description: 'Page not found.', main: simplePage('404', 'This page is not here.', 'Try the <a class="tlink" href="/">home page</a> or <a class="tlink" href="/contact/">get in touch</a>.') };

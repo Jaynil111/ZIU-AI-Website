@@ -17,7 +17,6 @@ const status = document.querySelector('.intro__status');
 const skipBtn = document.querySelector('.intro__skip');
 const hint = document.querySelector('.intro__hint');
 const sting = document.querySelector('.intro__sting');
-const stingVideo = document.querySelector('.sting__video');
 
 const isNarrow = () => innerWidth < 760;
 
@@ -38,10 +37,9 @@ const KEYS = [
 const CUT = 0.93;
 // Full timeline length; the scene cuts at 93%, so the visible flight is ~2.5 s.
 const INTRO_SECONDS = 2.6;
-// Logo sting after the flight: the logo video plays to its last frame, holds, then fades into the hero.
-const STING_END_HOLD_MS = 600;  // pause on the finished logo after the video ends
+// Vector logo reveal, including a short hold before returning to the hero.
+const STING_DURATION_MS = 3200;
 const STING_LEAVE_MS = 700;     // fade to the hero (matches sting-bg-out in CSS)
-const STING_MAX_MS = 9500;      // safety net if the video stalls or never reports its end
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
@@ -196,42 +194,30 @@ function lockInput(on) {
   window[fn]('keydown', onKey);
 }
 
-let stingTimer = 0, stingSafety = 0;
+let stingTimer = 0;
 const leaveSting = () => {
   if (state.mode !== 'sting') return;
-  clearTimeout(stingTimer); clearTimeout(stingSafety);
+  clearTimeout(stingTimer);
   sting.classList.add('is-leaving');
   stingTimer = setTimeout(() => finishIntro(0.95), STING_LEAVE_MS);
 };
-stingVideo && stingVideo.addEventListener('ended', () => {
-  if (state.mode !== 'sting') return;
-  clearTimeout(stingTimer);
-  stingTimer = setTimeout(leaveSting, STING_END_HOLD_MS);
-});
-stingVideo && stingVideo.addEventListener('error', () => { if (state.mode === 'sting') leaveSting(); });
-
-// End of the flight: the logo video plays from the start, exactly as supplied.
+// End of the glass flight: reveal the crisp, extruded vector wordmark.
 function startSting() {
   if (state.mode !== 'intro') return;
-  if (!sting || !stingVideo) { finishIntro(0.95); return; }
+  if (!sting) { finishIntro(0.95); return; }
   state.mode = 'sting';
   lockInput(false);
   hint && hint.classList.remove('is-shown');
   sting.classList.remove('is-leaving');
   root.classList.remove('intro-playing');
   root.classList.add('intro-sting');
-  clearTimeout(stingTimer); clearTimeout(stingSafety);
-  try { stingVideo.currentTime = 0; } catch (e) {}
-  const p = stingVideo.play();
-  // If the browser refuses to play (rare for a muted video), go straight to the hero.
-  if (p && p.catch) p.catch(() => { if (state.mode === 'sting') finishIntro(0.95); });
-  stingSafety = setTimeout(leaveSting, STING_MAX_MS);
+  clearTimeout(stingTimer);
+  stingTimer = setTimeout(leaveSting, STING_DURATION_MS);
 }
 
 function finishIntro(hazeFrom) {
   if (state.mode !== 'intro' && state.mode !== 'loading' && state.mode !== 'sting') return;
-  clearTimeout(stingTimer); clearTimeout(stingSafety);
-  stingVideo && stingVideo.pause();
+  clearTimeout(stingTimer);
   state.mode = wall && wall.prog ? 'hero' : (state.mode === 'loading' ? 'loading' : 'fallback');
   state.hazeFrom = wall ? hazeFrom : 0;
   state.hazeStart = performance.now();
@@ -252,7 +238,7 @@ function startIntro() {
   state.target = 0;
   state.shown = 0;
   state.last = 0;
-  clearTimeout(stingTimer); clearTimeout(stingSafety);
+  clearTimeout(stingTimer);
   sting && sting.classList.remove('is-leaving');
   root.classList.remove('intro-loading', 'intro-done', 'intro-sting');
   root.classList.add('intro-playing');

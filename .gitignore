@@ -3,3 +3,6 @@ dist/
 .form-submissions.jsonl
 .DS_Store
 .env
+
+# Local visual verification artifacts
+output/

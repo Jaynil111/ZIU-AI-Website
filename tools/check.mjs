@@ -10,6 +10,20 @@ for (const p of pages) { const h = fs.readFileSync(p, 'utf8'); ids.set(p, new Se
 const problems = [];
 for (const p of pages) {
   const h = fs.readFileSync(p, 'utf8'); const rel = path.relative(DIST, p);
+  const content = h.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '').replace(/<!--[\s\S]*?-->/g, '');
+  const text = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+  if (/class="[^"]*\bph\b/.test(content) || /\[[^\]]*\]/.test(text) || /\b(?:TODO|TBD|lorem ipsum|not yet supplied|replace before launch)\b/i.test(text)) problems.push(`${rel}: unfinished placeholder copy`);
+  if (/(?:href|src)="\s*"|href="#"/.test(content)) problems.push(`${rel}: empty link or asset destination`);
+  for (const [, tag, inner] of content.matchAll(/<(h[1-6]|dd|dt)\b[^>]*>([\s\S]*?)<\/\1>/gi)) {
+    if (!inner.replace(/<[^>]*>/g, '').trim()) problems.push(`${rel}: empty ${tag}`);
+  }
+  for (const [img] of content.matchAll(/<img\b[^>]*>/gi)) if (!/\balt="[^"]*"/.test(img)) problems.push(`${rel}: image missing alt text`);
+  for (const [, src] of content.matchAll(/\bsrc="([^"]+)"/g)) {
+    if (/^(https?:|data:)/.test(src)) continue;
+    const asset = src.split(/[?#]/)[0];
+    const target = asset.startsWith('/') ? path.join(DIST, asset) : path.resolve(path.dirname(p), asset);
+    if (!fs.existsSync(target)) problems.push(`${rel}: missing asset ${src}`);
+  }
   const dup = [...h.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]).filter((v, i, a) => a.indexOf(v) !== i);
   if (dup.length) problems.push(`${rel}: duplicate ids ${[...new Set(dup)]}`);
   const h1 = (h.match(/<h1[\s>]/g) || []).length; if (h1 !== 1) problems.push(`${rel}: ${h1} h1`);
@@ -31,3 +45,4 @@ for (const p of pages) {
   for (const [, id] of h.matchAll(/<(?:input|select|textarea)[^>]*\sid="([^"]+)"/g)) if (!h.includes(`for="${id}"`)) problems.push(`${rel}: no label for #${id}`);
 }
 console.log(`${pages.length} pages checked`); console.log(problems.length ? problems.join('\n') : 'No problems found');
+if (problems.length) process.exitCode = 1;

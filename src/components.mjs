@@ -1,23 +1,41 @@
+import { PRODUCTS } from './products.mjs';
+import { logo3d, glassMark } from './logo3d.mjs';
+export { logo3d };
 // Shared layout and components. Bracketed copy such as [baseline] is rendered
 // as a visible placeholder (see placeholders() below) so nothing unverified
 // can pass as real content.
 
-import { OWNER, phoneLink, POSITIONING, SERVICE_DETAILS, USE_CASES, REGIONS } from './data.mjs';
+import { OWNER, POSITIONING, SERVICE_DETAILS, USE_CASES, REGIONS } from './data.mjs';
 
 export const NAV = [
   { label: 'Services', href: '/services/' },
   { label: 'Solutions', href: '/use-cases/' },
+  { label: 'Portfolio', href: '/portfolio/' },
   { label: 'How we work', href: '/how-we-work/' },
   { label: 'Pricing', href: '/pricing/' },
   { label: 'About', href: '/about/' },
 ];
 
 export const CTA = {
-  book: { label: 'Book a 30-minute call', href: '/contact/#book' },
-  check: { label: 'Take the 5-minute check', href: '/automation-check/' },
+  book: { label: 'Book a call', href: '/contact/#book' },
+  check: { label: 'Quick automation check', href: '/automation-check/' },
   how: { label: 'See how we work', href: '/how-we-work/' },
   pricing: { label: 'See pricing', href: '/pricing/' },
 };
+
+// Product content is maintained in one place, without editing page markup.
+const productText = value => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+export const productPortfolio = () => `<div class="portfolio-grid">${PRODUCTS.map((product, index) => {
+  const url = new URL(product.url);
+  if (!['https:', 'http:'].includes(url.protocol)) throw new Error('Product links must use HTTP or HTTPS');
+  return `<a class="product-card" href="${productText(url.href)}" target="_blank" rel="noopener noreferrer">
+    <div class="product-card__visual" aria-hidden="true"><span>${productText(product.name)}</span><i>↗</i></div>
+    <div class="product-card__body"><p class="kicker"><span class="kicker__n">${String(index + 1).padStart(2, '0')}</span><span class="kicker__t">Software/Application</span></p>
+      <h3 class="h2">${productText(product.name)}</h3><p>${productText(product.description || '')}</p>
+      <span class="product-card__link">Visit ${productText(url.hostname)} <span aria-hidden="true">↗</span><span class="sr-only"> (opens in a new tab)</span></span>
+    </div>
+  </a>`;
+}).join('')}</div>`;
 
 export const SERVICES = SERVICE_DETAILS.map(({ id, name }) => ({ id, name }));
 
@@ -26,37 +44,9 @@ export const esc = (s) => String(s).replace(/&(?![a-z#0-9]+;)/gi, '&amp;');
 export const placeholders = (html) =>
   html.replace(/\[([^\]<>"=]{1,160})\]/g, '<span class="ph" title="Placeholder: replace before launch">[$1]</span>');
 
-// ZIU AI mark: a Z whose diagonal is cut into four vertical glass panes,
-// the same vertical glass wall the site is built around. 48-unit grid; the
-// bars and the diagonal share one stroke weight. Each instance gets its own
-// gradient/clip ids so several marks can sit on one page.
-const MARK_PANES = [
-  '6,34 14,27.85 14,34',
-  '15.33,26.82 23.33,20.67 23.33,28.36 16,34 15.33,34',
-  '24.67,19.64 32,14 32.67,14 32.67,21.18 24.67,27.33',
-  '34,14 42,14 34,20.15',
-];
-const MARK_EDGES = [[15.33, 26.82, 34], [24.67, 19.64, 27.33], [34, 14, 20.15]];
-let markId = 0;
-export const logoMark = (cls = '') => {
-  const id = `zm${++markId}`;
-  return `<svg class="mark ${cls}" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-  <defs>
-    <linearGradient id="${id}g" gradientUnits="userSpaceOnUse" x1="0" y1="14" x2="0" y2="34"><stop offset="0" stop-color="#EE6B7D"/><stop offset=".5" stop-color="#D23A4C"/><stop offset="1" stop-color="#A9233A"/></linearGradient>
-    <linearGradient id="${id}s" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-    <clipPath id="${id}c">${MARK_PANES.map((pt) => `<polygon points="${pt}"/>`).join('')}</clipPath>
-  </defs>
-  <rect class="mark__bar mark__bar--t" x="6" y="8" width="36" height="6" rx="0.5"/>
-  <rect class="mark__bar mark__bar--b" x="6" y="34" width="36" height="6" rx="0.5"/>
-  <g class="mark__panes" fill="url(#${id}g)">${MARK_PANES.map((pt, i) => `<polygon class="mark__pane" style="--i:${i}" points="${pt}"/>`).join('')}</g>
-  <g class="mark__edges">${MARK_EDGES.map(([x, a, b]) => `<line x1="${x}" y1="${a}" x2="${x}" y2="${b}"/>`).join('')}</g>
-  <g clip-path="url(#${id}c)"><rect class="mark__sheen" x="-14" y="10" width="9" height="28" fill="url(#${id}s)"/></g>
-</svg>`;
-};
-
-// Wordmark: ZIU AI with red glass in the lower half of Z, U and the last I:
-// where the panes of the Z mark land in the logo animation.
-export const wordmark = (cls = '') => `<span class="wm ${cls}"><span class="wm__a"><span class="wm__r">Z</span>I<span class="wm__r">U</span></span><span class="wm__b">A<span class="wm__r">I</span></span></span>`;
+// The same glass geometry is used for small wordmarks, the loader and large scenes.
+export const logoMark = (cls = '') => glassMark(cls);
+export const wordmark = (cls = '') => logo3d(cls, { compact: true });
 
 export const logo = () => `<a class="logo" href="/" data-logo aria-label="ZIU AI, home (replays the intro)">${wordmark()}</a>`;
 
@@ -104,33 +94,31 @@ const footer = () => `
       <div class="footer__brand">
         ${logo()}
         <p class="footer__tag">${POSITIONING}</p>
-        <p class="footer__line">ZIU AI advises on where AI pays off, then builds and runs the automations, tools and software, for businesses in the USA &amp; Canada, the UK &amp; Europe, the UAE &amp; Gulf, and India.</p>
         <div class="actions">${btn(CTA.book, 'primary', 'data-size="sm"')}</div>
       </div>
       <nav class="footer__cols" aria-label="Footer">
         <div><h2>Services</h2><ul>${SERVICES.map((s) => `<li><a href="/services/#${s.id}">${s.name}</a></li>`).join('')}</ul></div>
         <div><h2>Solutions</h2><ul>${USE_CASES.map((u) => `<li><a href="/use-cases/${u.slug}/">${u.name}</a></li>`).join('')}<li><a href="/industries/">Industries</a></li></ul></div>
-        <div><h2>Company</h2><ul><li><a href="/about/">About</a></li><li><a href="/how-we-work/">How we work</a></li><li><a href="/case-studies/">Results</a></li><li><a href="/pricing/">Pricing</a></li><li><a href="/careers/">Careers</a></li></ul></div>
-        <div><h2>Tools</h2><ul><li><a href="/automation-check/">Automation check</a></li><li><a href="/resources/#savings">Savings calculator</a></li><li><a href="/resources/#faq">FAQ</a></li><li><a href="/resources/#tool-guide">Tool guide</a></li></ul></div>
+        <div><h2>Company</h2><ul><li><a href="/about/">About</a></li><li><a href="/how-we-work/">How we work</a></li><li><a href="/portfolio/">Product portfolio</a></li><li><a href="/pricing/">Pricing</a></li><li><a href="/careers/">Careers</a></li></ul></div>
+        <div><h2>Applications</h2><ul><li><a href="/automation-check/">Automation check</a></li><li><a href="/resources/#savings">Savings calculator</a></li><li><a href="/resources/#faq">FAQ</a></li><li><a href="/resources/#application-guide">Application guide</a></li></ul></div>
         <div><h2>Regions</h2><ul>${REGIONS.map((r) => `<li><a href="/regions/${r.slug}/">${esc(r.name)}</a></li>`).join('')}</ul></div>
-        <div><h2>Contact</h2><ul><li>[email]</li><li>${phoneLink()}</li><li>[business address]</li><li><a href="/contact/">Contact page</a></li></ul></div>
+        <div><h2>Contact</h2><ul><li><a href="mailto:${OWNER.email}">${OWNER.email}</a></li><li>${OWNER.address}</li><li><a href="/contact/">Contact page</a></li></ul></div>
       </nav>
     </div>
   </div>
   <section class="signature" aria-label="ZIU AI">
     <div class="signature__aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-    <video class="logo-video signature__video" src="/assets/media/ziu-logo.mp4" poster="/assets/media/ziu-logo-end.jpg" muted playsinline preload="metadata" disablepictureinpicture aria-hidden="true"></video>
+    ${logo3d('logo3d--signature')}
   </section>
   <div class="wrap">
     <div class="footer__legal">
-      <p>© 2026 [Registered company name]. All rights reserved.</p>
-      <p class="footer__credit">Glass piano sound: <a href="https://github.com/sfzinstruments/SalamanderGrandPiano" rel="noopener">Salamander Grand Piano</a> by Alexander Holm, <a href="https://creativecommons.org/licenses/by/3.0/" rel="noopener license">CC BY 3.0</a>.</p>
+      <p>© 2026 ZIU AI LLP. All rights reserved.</p>
       <ul><li><a href="/privacy/">Privacy policy</a></li><li><a href="/terms/">Terms</a></li><li><button type="button" class="linklike" data-cookie-settings>Cookie settings</button></li></ul>
     </div>
   </div>
   <dialog id="cookie-dialog" class="dialog" aria-labelledby="cookie-title">
     <h2 id="cookie-title" class="h3">Cookie settings</h2>
-    <p>This site does not currently set analytics or marketing cookies. [Update this panel if analytics or a booking widget that sets cookies is added.]</p>
+    <p>This site does not set analytics or marketing cookies. It uses session storage in your browser to restore your homepage scroll position. You can clear this through your browser settings. See our <a href="/privacy/">privacy policy</a> for details about contact forms and third-party services.</p>
     <button type="button" class="btn btn--primary" data-close><span>Close</span></button>
   </dialog>
 </footer>`;
@@ -242,20 +230,18 @@ export const ICONS = {
 };
 export const icon = (name, cls = '') => `<svg class="icon ${cls}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">${ICONS[name] || ''}</svg>`;
 
-// Founder feature: glass portrait frame with name and direct contact.
-export const founderFeature = ({ experience = '[One sentence on relevant experience, stated as fact.]', extra = '' } = {}) => `
+// Founder feature: supplied portrait with name and direct contact.
+export const founderFeature = ({ experience = 'Chartered Accountant with 10 years of experience in the IT industry as a solution architect.', extra = '' } = {}) => `
 <article class="founder" data-reveal>
   <figure class="portrait">
-    ${cglass('cglass--portrait')}
-    <div class="portrait__frame"><span class="portrait__ph">[Photo of ${OWNER.name}]</span></div>
-    <span class="portrait__edge" aria-hidden="true"></span>
+    <img class="portrait__image" src="/assets/media/krunal-rajput.png" alt="${OWNER.name}, ${OWNER.role} of ZIU AI" width="1086" height="1448" loading="lazy" decoding="async">
     <figcaption class="sr-only">${OWNER.name}, ${OWNER.role}</figcaption>
   </figure>
   <div class="founder__text">
     <p class="kicker"><span class="kicker__t">${OWNER.role}</span></p>
     <h3 class="founder__name">${OWNER.name}</h3>
     <p class="founder__exp">${experience}</p>
-    <p class="founder__contact"><span>Direct line</span>${phoneLink('tlink')}</p>
+    <p class="founder__contact"><span>Email</span><a class="tlink" href="mailto:${OWNER.email}">${OWNER.email}</a></p>
     ${extra}
   </div>
 </article>`;
