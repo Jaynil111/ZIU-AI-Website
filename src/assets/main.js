@@ -1,4 +1,4 @@
-// ZIU AI — shared site behaviour (every page).
+// ZIU AI — shared site behavior (every page).
 const root = document.documentElement;
 const reduced = new URLSearchParams(location.search).get('motion') === 'reduce' || matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (reduced) root.classList.add('reduce-motion');
@@ -80,7 +80,7 @@ if (index) {
   });
 }
 
-/* Header colour follows the section underneath it. */
+/* Header color follows the section underneath it. */
 const darkSections = [...document.querySelectorAll('[data-theme="dark"]')];
 if (header && darkSections.length) {
   const headerMid = () => header.offsetHeight / 2;
@@ -114,7 +114,7 @@ document.querySelectorAll('[data-bridge]').forEach((el) => {
   io.observe(el);
 });
 
-/* Interactive walkthrough: enquiry → CRM record → draft awaiting approval. */
+/* Interactive walkthrough: inquiry → CRM record → draft awaiting approval. */
 document.querySelectorAll('[data-walkthrough]').forEach((w) => {
   const stages = [...w.querySelectorAll('[data-stage]')];
   const dots = [...w.querySelectorAll('[data-goto]')];
@@ -264,7 +264,7 @@ document.getElementById('cookie-dialog')?.addEventListener('click', (e) => {
   if (e.target.closest('[data-close]') || e.target.id === 'cookie-dialog') e.currentTarget.close();
 });
 
-/* Founding-client enquiries arrive with the topic prefilled. */
+/* Founding-client inquiries arrive with the topic prefilled. */
 if (new URLSearchParams(location.search).get('topic') === 'founding') {
   const msg = document.getElementById('c-msg');
   if (msg && !msg.value) msg.value = 'I would like to ask about a founding-client place.';
@@ -356,7 +356,7 @@ function motionFrame() {
   glassSets.forEach((g) => {
     if (!g.visible || g.el.classList.contains('is-still')) return; // panes hidden behind a glass still
     const r = g.el.getBoundingClientRect();
-    const t = (r.top + r.height / 2 - vh / 2) / vh; // -1..1 around the centre
+    const t = (r.top + r.height / 2 - vh / 2) / vh; // -1..1 around the center
     g.panes.forEach((p, i) => p.style.setProperty('--py', `${(t * ((i % 4) + 1) * -6 * k).toFixed(1)}px`));
   });
 }
@@ -409,74 +409,24 @@ if (smoothWheel) {
   document.addEventListener('click', (e) => { if (e.target.closest('a[href*="#"]')) release(); }, true);
 }
 
-/* Closing wordmark: fill the width, and light it from the cursor (or finger).
-   The letters glow where the light is; the shadow falls away from it. */
+/* Closing logo: the ZIU AI logo video plays each time the section comes into view and
+   rests on its last frame (the finished logo). Until then, and under reduced motion,
+   the poster shows that finished logo. */
 const sig = document.querySelector('.signature');
-if (sig) {
-  const word = sig.querySelector('.signature__word');
-  const parts = [...word.querySelectorAll(':scope > .sig__a, :scope > .sig__b')];
-  // Measure on an invisible copy outside the page flow. Never resize the real
-  // word to measure it: shrinking it, even for a moment, makes the page shorter
-  // and pulls the scroll position up when you are at the bottom.
-  const meas = word.cloneNode(true);
-  meas.setAttribute('aria-hidden', 'true');
-  meas.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden;pointer-events:none;font-size:100px;width:auto;';
-  document.body.appendChild(meas);
-  let fitW = 0;
-  const fit = (force) => {
-    const cs = getComputedStyle(sig);
-    const cw = sig.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-    if (!force && cw === fitW) return; // height-only resizes (phone toolbars) change nothing
-    fitW = cw;
-    const w = meas.scrollWidth, h = meas.offsetHeight;
-    const vh = Math.min(innerHeight, document.documentElement.clientHeight);
-    const scale = Math.min((cw * 0.98) / w, (vh * 0.68) / h);
-    word.style.fontSize = `${(100 * scale).toFixed(1)}px`;
-  };
-  fit(true);
-  addEventListener('resize', () => fit(false));
-  document.fonts?.ready.then(() => fit(true));
-
-
-  if (!reduced) {
-    let tx = 0.5, ty = 0.42, x = tx, y = ty, raf = 0;
-    const apply = () => {
-      const r = sig.getBoundingClientRect();
-      const px = r.left + x * r.width, py = r.top + y * r.height;
-      sig.style.setProperty('--sx', `${(x * 100).toFixed(2)}%`);
-      sig.style.setProperty('--sy', `${(y * 100).toFixed(2)}%`);
-      // Light position inside each half of the word, in its own coordinates.
-      for (const p of parts) {
-        const b = p.getBoundingClientRect();
-        p.style.setProperty('--lx', `${(px - b.left).toFixed(1)}px`);
-        p.style.setProperty('--ly', `${(py - b.top).toFixed(1)}px`);
-      }
-      // Shadow is cast away from the light, like a lamp moving round the word.
-      const w = word.getBoundingClientRect();
-      const dx = (w.left + w.width / 2 - px) / Math.max(1, w.width);
-      const dy = (w.top + w.height / 2 - py) / Math.max(1, w.height);
-      sig.style.setProperty('--shx', `${Math.max(-40, Math.min(40, dx * 60)).toFixed(1)}px`);
-      sig.style.setProperty('--shy', `${Math.max(6, Math.min(48, 22 + dy * 30)).toFixed(1)}px`);
-    };
-    const step = () => {
-      x += (tx - x) * 0.14; y += (ty - y) * 0.14;
-      apply();
-      raf = Math.abs(tx - x) + Math.abs(ty - y) > 0.0008 ? requestAnimationFrame(step) : 0;
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(step); };
-    const move = (e) => {
-      const r = sig.getBoundingClientRect();
-      tx = (e.clientX - r.left) / r.width; ty = (e.clientY - r.top) / r.height;
-      sig.classList.add('is-lit', 'was-lit');
-      kick();
-    };
-    sig.addEventListener('pointermove', move, { passive: true });
-    sig.addEventListener('pointerdown', move, { passive: true });
-    sig.addEventListener('pointerleave', () => { sig.classList.remove('is-lit'); tx = 0.5; ty = 0.42; kick(); });
-    // Keep the light anchored while the page scrolls under a still cursor.
-    addEventListener('scroll', () => { if (sig.classList.contains('is-lit')) kick(); }, { passive: true });
-    apply();
-  }
+const sigVideo = sig && sig.querySelector('.signature__video');
+if (sigVideo && !reduced && 'IntersectionObserver' in window) {
+  let played = false;
+  new IntersectionObserver(([e]) => {
+    if (e.isIntersecting && e.intersectionRatio >= 0.55) {
+      if (played) return;
+      played = true;
+      try { sigVideo.currentTime = 0; } catch (err) {}
+      const p = sigVideo.play();
+      if (p && p.catch) p.catch(() => {});
+    } else if (!e.isIntersecting) {
+      played = false; // replay next time it comes into view
+    }
+  }, { threshold: [0, 0.55] }).observe(sigVideo);
 }
 
 /* Savings calculator: uses only the visitor's own figures. */

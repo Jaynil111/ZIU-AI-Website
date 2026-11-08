@@ -176,15 +176,16 @@ html:not(.js) .hero__canvas, .hero.gl-fallback .hero__canvas { display: none; }
 @keyframes drop { to { top: 100%; } }
 
 .intro { display: none; }
-.js.intro-loading, .js.intro-playing { overflow: hidden; }
-.js.intro-loading body, .js.intro-playing body { overflow: hidden; }
-.js.intro-loading .hero__canvas, .js.intro-playing .hero__canvas { position: fixed; z-index: 90; }
-.js.intro-loading .intro, .js.intro-playing .intro { display: grid; position: fixed; inset: 0; z-index: 95; place-items: center; color: var(--on-dark); }
+.js.intro-loading, .js.intro-playing, .js.intro-sting { overflow: hidden; }
+.js.intro-loading body, .js.intro-playing body, .js.intro-sting body { overflow: hidden; }
+.js.intro-loading .hero__canvas, .js.intro-playing .hero__canvas, .js.intro-sting .hero__canvas { position: fixed; z-index: 90; }
+.js.intro-loading .intro, .js.intro-playing .intro, .js.intro-sting .intro { display: grid; position: fixed; inset: 0; z-index: 95; place-items: center; color: var(--on-dark); }
 .js.intro-loading .intro { background: var(--ink); }
-.js.intro-loading .site-header, .js.intro-playing .site-header,
-.js.intro-loading .section-index, .js.intro-playing .section-index { opacity: 0; pointer-events: none; }
-.js.intro-loading .hero__inner > *, .js.intro-playing .hero__inner > *, .js.intro-loading .hero__scroll, .js.intro-playing .hero__scroll { opacity: 0; }
-.js.intro-loading .hero__shade, .js.intro-playing .hero__shade { opacity: 0; }
+.js.intro-loading .site-header, .js.intro-playing .site-header, .js.intro-sting .site-header,
+.js.intro-loading .section-index, .js.intro-playing .section-index, .js.intro-sting .section-index { opacity: 0; pointer-events: none; }
+.js.intro-loading .hero__inner > *, .js.intro-playing .hero__inner > *, .js.intro-sting .hero__inner > *,
+.js.intro-loading .hero__scroll, .js.intro-playing .hero__scroll, .js.intro-sting .hero__scroll { opacity: 0; }
+.js.intro-loading .hero__shade, .js.intro-playing .hero__shade, .js.intro-sting .hero__shade { opacity: 0; }
 
 .intro__brand { grid-area: 1 / 1; display: flex; align-items: center; gap: 16px; font-weight: 680; letter-spacing: 0.32em; font-size: 15px; transition: opacity 0.8s var(--ease), transform 1.2s var(--ease); }
 .mark--intro { width: 40px; height: 40px; }
@@ -194,8 +195,22 @@ html:not(.js) .hero__canvas, .hero.gl-fallback .hero__canvas { display: none; }
 .intro__steps li::after { content: ""; position: absolute; inset: 0; background: var(--on-dark); transform: scaleX(0); transform-origin: left; transition: transform 0.5s var(--ease); }
 .intro__steps li.is-done::after { transform: scaleX(1); }
 .intro__status { margin: 0; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--on-dark-muted); }
-.intro-playing .intro__brand { opacity: 0; transform: scale(1.04); }
-.intro-playing .intro__load { opacity: 0; }
+.intro-playing .intro__brand, .intro-sting .intro__brand { opacity: 0; transform: scale(1.04); }
+.intro-playing .intro__load, .intro-sting .intro__load { opacity: 0; }
+
+/* Logo sting: at the end of the glass flight the ZIU AI logo video plays exactly as supplied, enlarged,
+   then gives way to the hero. The video's edges are near black, so it sits on a matching backdrop with
+   softly faded edges and no visible frame. */
+.intro__sting { grid-area: 1 / 1; position: fixed; inset: 0; z-index: 96; display: none; overflow: hidden; background: #0b0b0b; opacity: 0; pointer-events: none; }
+.intro-sting .intro__sting { display: block; animation: sting-bg 0.45s var(--ease) both; }
+.intro-sting .intro__sting.is-leaving { animation: sting-bg-out 0.7s var(--ease-io) both; }
+/* Bigger than cover on wide screens (the logo is ~53% of the frame width), capped so the logo always fits a phone. */
+.logo-video { display: block; aspect-ratio: 832 / 464; height: auto; object-fit: cover; background: transparent;
+  -webkit-mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at 50% 50%, #000 62%, transparent 100%); }
+.sting__video { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: min(max(100vw, 179.3vh) * 1.22, 172vw); max-width: none; }
+.intro-sting .is-leaving .sting__video { transition: scale 0.7s var(--ease-io); scale: 1.06; }
+@keyframes sting-bg { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sting-bg-out { from { opacity: 1; } to { opacity: 0; } }
 .intro__hint { position: fixed; left: 50%; bottom: 40px; transform: translate(-50%, 8px); margin: 0; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--on-dark-muted); opacity: 0; transition: opacity 0.8s, transform 0.8s var(--ease); white-space: nowrap; }
 .intro__hint.is-shown { opacity: 1; transform: translate(-50%, 0); }
 .intro__skip { position: fixed; right: var(--gutter); bottom: 32px; min-height: 40px; padding: 0 16px; background: rgba(16,16,16,0.4); border: 1px solid rgba(247,245,242,0.28); border-radius: 2px; color: var(--on-dark); font-size: 13px; font-weight: 560; letter-spacing: 0.02em; cursor: pointer; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); transition: border-color var(--t-fast), background var(--t-fast); }
@@ -542,7 +557,7 @@ html:not(.js) .step { opacity: 1; }
 .footer__tag { font-family: var(--serif); font-size: 1.7rem; line-height: 1.15; margin: 28px 0 16px; max-width: 18ch; }
 .footer__line { color: var(--on-dark-muted); font-size: 15px; max-width: 42ch; }
 .footer__brand .actions { margin-top: 24px; }
-.footer__cols { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; }
+.footer__cols { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 24px; }
 .footer__cols h2 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--on-dark-muted); margin-bottom: 18px; }
 .footer__cols li { margin-bottom: 10px; font-size: 14.5px; line-height: 1.4; }
 .footer__cols a { text-decoration: none; opacity: 0.9; }
@@ -841,28 +856,10 @@ html:not(.js) [data-progress], .reduce-motion [data-progress] { --p: 1; }
 .signature::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: calc(var(--lr) * 1);
   background: radial-gradient(38vmax 38vmax at var(--sx) var(--sy), rgba(255,255,255,0.07), rgba(197,45,62,0.10) 35%, rgba(197,45,62,0) 70%); }
 .signature.is-lit { --lr: 1; }
-.signature__word { position: relative; display: flex; align-items: baseline; gap: 0.07em; margin: 0; font-family: var(--sans);
-  font-size: min(40vw, 62svh); /* refined by main.js to fill the width exactly */
-  line-height: 0.8; letter-spacing: -0.055em; white-space: nowrap; user-select: none; }
-/* Contact shadow on the "floor": slides away from the light */
-.signature__word::after { content: ""; position: absolute; z-index: -2; will-change: transform; left: 5%; right: 5%; bottom: -0.1em; height: 0.15em; border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(0,0,0,0.75), rgba(0,0,0,0)); filter: blur(10px); transform: translateX(calc(var(--shx) * 1.4)); }
-.sig__a, .sig__b { --lx: -9999px; --ly: -9999px; display: inline-block; color: transparent; -webkit-background-clip: text; background-clip: text; background-repeat: no-repeat;
-  background-size: 100% 100%, 320% 100%, 100% 100%; background-position: 0 0, 160% 0, 0 0;
-  animation: sig-sheen 12s var(--ease-io) infinite; }
-.sig__a { font-weight: 800;
-  background-image:
-    radial-gradient(circle calc(var(--lr) * 0.4em) at var(--lx) var(--ly), #FFFFFF 0%, rgba(255,250,248,0.85) 26%, rgba(214,120,130,0.22) 60%, rgba(197,45,62,0) 100%),
-    linear-gradient(105deg, rgba(255,255,255,0) 42%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 58%),
-    linear-gradient(180deg, #FBFAF8 0%, #E7E3DD 52%, #A9ACB3 100%); }
-.sig__b { font-weight: 300;
-  background-image:
-    radial-gradient(circle calc(var(--lr) * 0.4em) at var(--lx) var(--ly), #FFFFFF 0%, rgba(246,248,252,0.85) 26%, rgba(214,120,130,0.2) 60%, rgba(197,45,62,0) 100%),
-    linear-gradient(105deg, rgba(255,255,255,0) 42%, rgba(255,255,255,0.9) 50%, rgba(255,255,255,0) 58%),
-    linear-gradient(180deg, #DADCE1 0%, #B5B8BE 55%, #84878E 100%);
-  animation-delay: 0.35s; }
-/* One light sheen crosses the word, then it rests: a constant, calm rhythm. */
-@keyframes sig-sheen { 0% { background-position: 0 0, 160% 0, 0 0; } 45%, 100% { background-position: 0 0, -60% 0, 0 0; } }
+/* The logo video, enlarged; "screen" blending drops its near-black backdrop so the section's own light shows round it. */
+/* Wider than the section on purpose (its edges are empty dark), so it is centered by hand: grid centering would pin an oversized item to the left. */
+.signature__video { justify-self: start; width: min(150vw, 176svh); max-width: none; margin-block: -6svh; margin-left: 50%; translate: -50% 0; mix-blend-mode: screen; pointer-events: none; user-select: none; }
+@media (max-width: 599px) { .signature__video { width: 172vw; margin-block: -4svh; } }
 .signature__rule { width: min(140px, 24vw); height: 2px; margin: clamp(32px, 5vh, 56px) 0 20px; background: linear-gradient(90deg, rgba(197,45,62,0), var(--ruby) 50%, rgba(197,45,62,0)); }
 .signature__line { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px 14px; margin: 0; font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--on-dark-muted); }
 .signature__line a { color: var(--on-dark); text-decoration: none; letter-spacing: 0.08em; }
@@ -874,9 +871,8 @@ html:not(.js) [data-progress], .reduce-motion [data-progress] { --p: 1; }
   .signature__line { flex-direction: column; gap: 4px; letter-spacing: 0.12em; }
   .signature__sep { display: none; }
 }
-.reduce-motion .sig__a, .reduce-motion .sig__b { animation: none; background-position: 0 0, -60% 0, 0 0; }
 .reduce-motion .signature__hint { display: none; }
-@media (prefers-reduced-motion: reduce) { .sig__a, .sig__b { animation: none; background-position: 0 0, -60% 0, 0 0; } .signature__hint { display: none; } }
+@media (prefers-reduced-motion: reduce) { .signature__hint { display: none; } }
 
 /* Over the closing wordmark the lens becomes a soft lamp ring */
 .cursor-lamp .cursor-ring__lens { transform: scale(1.5); border-color: rgba(255,255,255,0.35); background: radial-gradient(circle, rgba(255,255,255,0.10), rgba(255,255,255,0) 65%); box-shadow: 0 0 40px 6px rgba(197,45,62,0.18); }
@@ -891,7 +887,7 @@ html:not(.js) [data-progress], .reduce-motion [data-progress] { --p: 1; }
   -webkit-background-clip: text; background-clip: text;
   filter: drop-shadow(0 2px 0 rgba(0,0,0,0.35)) drop-shadow(0 10px 26px rgba(197,45,62,0.4));
   animation: name-shimmer 18s linear infinite; }
-/* Fine underline flourish, brightest at the centre */
+/* Fine underline flourish, brightest at the center */
 .signature__name::after { content: ""; position: absolute; left: 8%; right: 8%; bottom: -0.06em; height: 1px; background: linear-gradient(90deg, rgba(242,168,178,0), rgba(242,168,178,0.95) 50%, rgba(242,168,178,0)); }
 .signature__name::before { content: ""; position: absolute; left: 50%; bottom: calc(-0.06em - 2px); width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #F2A8B2; box-shadow: 0 0 12px 2px rgba(242,168,178,0.8); }
 @keyframes name-shimmer { to { background-position: -220% 0; } }
@@ -910,8 +906,8 @@ html:not(.js) [data-progress], .reduce-motion [data-progress] { --p: 1; }
 .reduce-motion .signature__aurora i { animation: none; }
 @media (prefers-reduced-motion: reduce) { .signature__aurora i { animation: none; } }
 
-/* Finale shows the name alone, centred */
-.signature { align-content: center; }
+/* Finale shows the name alone, centered */
+.signature { align-content: center; grid-template-columns: minmax(0, 1fr); } /* the column stays section-wide, so the oversized logo video centers on it */
 
 /* ---------- Savings calculator ---------- */
 .calc { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(24px, 4vw, 56px); align-items: stretch; }
@@ -948,14 +944,28 @@ html:not(.js) [data-progress], .reduce-motion [data-progress] { --p: 1; }
 .cglass.is-still > i, .cglass.is-still .cglass__light { opacity: 0; transition: opacity 0.9s var(--ease); }
 .cglass--portrait.is-still + .portrait__frame { -webkit-backdrop-filter: blur(6px) saturate(1.2); backdrop-filter: blur(6px) saturate(1.2); }
 
-/* The word's shadow lives on its own layer: drawn once, then only slid away
-   from the light (compositor-only), so the sheen never re-renders shadows. */
-.sig__a, .sig__b { position: relative; z-index: 1; }
-.signature__shadow { position: absolute; inset: 0; z-index: 0; display: flex; align-items: baseline; gap: 0.07em; pointer-events: none;
-  filter: blur(18px); opacity: 0.85; transform: translate3d(var(--shx), calc(var(--shy) + 4px), 0); will-change: transform; }
-.signature__shadow span { color: rgba(4, 0, 2, 0.85); background: none; -webkit-background-clip: border-box; background-clip: border-box; animation: none; }
-.signature__shadow .sig__b { color: rgba(4, 0, 2, 0.7); }
-
 /* Hidden CSS panes behind a rendered glass still do no work at all */
 .cglass.is-still > i { animation: none; will-change: auto; }
 .cglass.is-still > i::before { animation: none; display: none; }
+
+/* ---------- Copy v2 additions: pillars, pricing, service groups (reuse existing patterns) ---------- */
+.pillars { counter-reset: none; }
+.pillars .eng__item > p:last-of-type { color: var(--muted); }
+.pillar__services { margin-top: 20px; border-top: 1px solid var(--line); }
+.pillar__services li { border-bottom: 1px solid var(--line); }
+.pillar__services a { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; font-size: 15px; text-decoration: none; color: var(--ink); }
+.pillar__services a::after { content: "→"; color: var(--deep); transition: transform var(--t-fast) var(--ease); }
+.pillar__services a:hover { color: var(--deep); }
+.pillar__services a:hover::after { transform: translateX(4px); }
+.track__price { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--ink); margin: -6px 0 18px; }
+.eng__price { font-family: var(--serif); font-size: clamp(1.6rem, 2.2vw, 2rem); line-height: 1.1; margin: 0 0 10px; color: var(--ink); }
+.eng__suits { font-size: 15px; color: var(--muted); margin: 0 0 16px; }
+.eng__suits span { display: inline-block; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--deep); margin-right: 8px; }
+.eng__item .ticks { margin-top: 20px; }
+.eng__item .ticks li { color: var(--ink); }
+.service-group { padding: 56px 0 8px; }
+.service-group:first-child { padding-top: 0; }
+.service-group .kicker { margin: 0; }
+.service-group .kicker__n { color: var(--deep); }
+.method__step .step__time { margin-top: 16px; font-size: 14px; color: var(--muted); }
+.method__step .step__time span { display: block; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600; color: var(--deep); margin-bottom: 2px; }

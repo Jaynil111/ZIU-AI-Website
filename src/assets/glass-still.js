@@ -36,7 +36,7 @@ if (targets.length && params.get('gl') !== '0') {
   };
 
   // Framing per placement: the wall sits to the right of text on wide
-  // headers and bands, centred in portraits and on phones.
+  // headers and bands, centered in portraits and on phones.
   const camera = (el, aspect) => {
     if (el.classList.contains('cglass--portrait')) return { ro: [0.15, 0.1, -13.2], ta: [0.05, 0, 0.4], red: 0.5 };
     if (aspect < 1) return { ro: [0.2, -1.5, -15.5], ta: [0.1, -1.25, 0.5], red: 0.45 };

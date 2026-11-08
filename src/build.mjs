@@ -23,6 +23,10 @@ for (const f of files) {
   fs.writeFileSync(path.join(A, f), src);
 }
 
+// Media (the logo video and its poster) is binary: copied byte for byte, never read as text.
+fs.mkdirSync(path.join(A, 'media'), { recursive: true });
+for (const f of fs.readdirSync(path.join(ROOT, 'src/media'))) fs.copyFileSync(path.join(ROOT, 'src/media', f), path.join(A, 'media', f));
+
 const fonts = [
   ['@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2', 'instrument-serif-400.woff2'],
   ['@fontsource/instrument-serif/files/instrument-serif-latin-400-italic.woff2', 'instrument-serif-400-italic.woff2'],

@@ -2,32 +2,24 @@
 // as a visible placeholder (see placeholders() below) so nothing unverified
 // can pass as real content.
 
-import { OWNER, phoneLink } from './data.mjs';
+import { OWNER, phoneLink, POSITIONING, SERVICE_DETAILS, USE_CASES, REGIONS } from './data.mjs';
 
 export const NAV = [
   { label: 'Services', href: '/services/' },
-  { label: 'Use cases', href: '/use-cases/' },
-  { label: 'Engagements', href: '/engagements/' },
-  { label: 'Case studies', href: '/case-studies/' },
+  { label: 'Solutions', href: '/use-cases/' },
   { label: 'How we work', href: '/how-we-work/' },
+  { label: 'Pricing', href: '/pricing/' },
   { label: 'About', href: '/about/' },
-  { label: 'Resources', href: '/resources/' },
 ];
 
 export const CTA = {
-  book: { label: 'Book a scoping call', href: '/contact/#book' },
-  check: { label: 'Take the automation check', href: '/automation-check/' },
-  how: { label: 'See how it works', href: '/how-we-work/' },
+  book: { label: 'Book a 30-minute call', href: '/contact/#book' },
+  check: { label: 'Take the 5-minute check', href: '/automation-check/' },
+  how: { label: 'See how we work', href: '/how-we-work/' },
+  pricing: { label: 'See pricing', href: '/pricing/' },
 };
 
-export const SERVICES = [
-  { id: 'discovery', name: 'Discovery and automation audit' },
-  { id: 'workflow', name: 'Workflow automation' },
-  { id: 'assistants', name: 'AI assistants and agents' },
-  { id: 'integration', name: 'Systems integration' },
-  { id: 'run', name: 'Run and improve' },
-  { id: 'training', name: 'Training and adoption' },
-];
+export const SERVICES = SERVICE_DETAILS.map(({ id, name }) => ({ id, name }));
 
 export const esc = (s) => String(s).replace(/&(?![a-z#0-9]+;)/gi, '&amp;');
 
@@ -69,7 +61,7 @@ export const pageHero = ({ kick, title, sub, actions = '', variant = '' }) => `
   </div>
 </section>`;
 
-export const ctaBand = ({ title = 'Find out what to automate first.', sub = 'A 30-minute call. You leave with three candidate processes, whether or not we work together.', actions } = {}) => `
+export const ctaBand = ({ title = 'Find out where AI pays off for you.', sub = 'A 30-minute call. You leave with three processes worth automating, whether or not we work together.', actions } = {}) => `
 <section class="cta-band" data-theme="dark" aria-labelledby="cta-title">
   ${cglass('cglass--band')}
   <div class="wrap cta-band__inner" data-reveal>
@@ -85,22 +77,23 @@ const footer = () => `
     <div class="footer__top">
       <div class="footer__brand">
         ${logo()}
-        <p class="footer__tag">Practical AI automation for growing businesses.</p>
-        <p class="footer__line">ZIU AI designs, builds and runs AI automation for businesses in North America, the UK and Europe, the UAE and India.</p>
+        <p class="footer__tag">${POSITIONING}</p>
+        <p class="footer__line">ZIU AI advises on where AI pays off, then builds and runs the automations, tools and software, for businesses in the USA &amp; Canada, the UK &amp; Europe, the UAE &amp; Gulf, and India.</p>
         <div class="actions">${btn(CTA.book, 'primary', 'data-size="sm"')}</div>
       </div>
       <nav class="footer__cols" aria-label="Footer">
         <div><h2>Services</h2><ul>${SERVICES.map((s) => `<li><a href="/services/#${s.id}">${s.name}</a></li>`).join('')}</ul></div>
-        <div><h2>Company</h2><ul><li><a href="/about/">About</a></li><li><a href="/how-we-work/">How we work</a></li><li><a href="/case-studies/">Case studies</a></li><li><a href="/careers/">Careers</a></li></ul></div>
-        <div><h2>Resources</h2><ul><li><a href="/resources/#faq">FAQ</a></li><li><a href="/resources/#tool-guide">Tool guide</a></li><li><a href="/resources/#savings">Savings calculator</a></li><li><a href="/automation-check/">Automation check</a></li></ul></div>
-        <div><h2>Regions</h2><ul><li><a href="/regions/usa-canada/">USA &amp; Canada</a></li><li><a href="/regions/uk-europe/">UK &amp; Europe</a></li><li><a href="/regions/uae-gulf/">UAE &amp; Gulf</a></li><li><a href="/regions/india/">India</a></li></ul></div>
+        <div><h2>Solutions</h2><ul>${USE_CASES.map((u) => `<li><a href="/use-cases/${u.slug}/">${u.name}</a></li>`).join('')}<li><a href="/industries/">Industries</a></li></ul></div>
+        <div><h2>Company</h2><ul><li><a href="/about/">About</a></li><li><a href="/how-we-work/">How we work</a></li><li><a href="/case-studies/">Results</a></li><li><a href="/pricing/">Pricing</a></li><li><a href="/careers/">Careers</a></li></ul></div>
+        <div><h2>Tools</h2><ul><li><a href="/automation-check/">Automation check</a></li><li><a href="/resources/#savings">Savings calculator</a></li><li><a href="/resources/#faq">FAQ</a></li><li><a href="/resources/#tool-guide">Tool guide</a></li></ul></div>
+        <div><h2>Regions</h2><ul>${REGIONS.map((r) => `<li><a href="/regions/${r.slug}/">${esc(r.name)}</a></li>`).join('')}</ul></div>
         <div><h2>Contact</h2><ul><li>[email]</li><li>${phoneLink()}</li><li>[business address]</li><li><a href="/contact/">Contact page</a></li></ul></div>
       </nav>
     </div>
   </div>
   <section class="signature" aria-label="ZIU AI">
     <div class="signature__aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-    <p class="signature__word" aria-hidden="true"><span class="sig__a">ZIU</span><span class="sig__b">AI</span><span class="signature__shadow"><span class="sig__a">ZIU</span><span class="sig__b">AI</span></span></p>
+    <video class="logo-video signature__video" src="/assets/media/ziu-logo.mp4" poster="/assets/media/ziu-logo-end.jpg" muted playsinline preload="metadata" disablepictureinpicture aria-hidden="true"></video>
   </section>
   <div class="wrap">
     <div class="footer__legal">
@@ -124,7 +117,6 @@ const header = (path) => `
       <ul>${NAV.map((n) => `<li><a href="${n.href}"${path.startsWith(n.href) ? ' aria-current="page"' : ''}>${n.label}</a></li>`).join('')}</ul>
     </nav>
     <div class="header__cta">
-      <a class="btn btn--ghost header__check" data-size="sm" href="${CTA.check.href}"><span>${CTA.check.label}</span></a>
       <a class="btn btn--primary" data-size="sm" href="${CTA.book.href}"><span>${CTA.book.label}</span></a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu"><span></span><span></span></button>
     </div>
@@ -207,6 +199,8 @@ export const ICONS = {
   held: C(12, 12, 8.5) + P('M10 9v6M14 9v6'),
   region: C(12, 12, 8.5) + P('M3.5 12h17') + P('M12 3.5c2.6 2.6 2.6 14.4 0 17M12 3.5c-2.6 2.6-2.6 14.4 0 17'),
   // Services
+  strategy: C(12, 12, 8.5) + P('M15.2 8.8l-2 5.4-5.4 2 2-5.4z') + P('M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2'),
+  software: P('M8 7l-5 5 5 5') + P('M16 7l5 5-5 5') + P('M13.5 4.5l-3 15'),
   discovery: C(11, 11, 6.5) + P('M20.5 20.5 16 16') + P('M8 11h6M11 8v6'),
   workflow: C(5, 12, 2) + C(19, 6, 2) + C(19, 18, 2) + P('M7 12h4l6-5.2M11 12l6 5.2'),
   assistants: P('M4 4h16v11H9l-5 4z') + P('M8 8.5h8M8 11.5h5'),
